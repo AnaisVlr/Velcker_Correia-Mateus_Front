@@ -15,6 +15,10 @@ export default function HomeComponent() {
   const [password, setPassword] = useState<string>("");
   const [confirmedPassword, setConfirmedPassword] = useState<string>("");
 
+  const handleDisconnect = () => {
+    localStorage.removeItem("access_token")
+    setIsConnected(false)
+  }
   const handleSubmitSignIn = (event: any) => {
     event.preventDefault();
     
@@ -62,6 +66,11 @@ export default function HomeComponent() {
   if(isConnected)
     return (
       <>
+        <Button
+          color="secondary"
+          onClick={handleDisconnect}>
+          Déconnexion
+        </Button>
         <h1>Bonjour</h1>
         <Link to="/jeux">Jeux</Link>
         <Link to="benevoles">Bénévoles</Link>

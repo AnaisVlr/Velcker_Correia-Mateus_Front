@@ -52,10 +52,9 @@ function BenevoleComponent() {
     const token = localStorage.getItem('access_token');
     if(token != null) { // S'il existe
       if(decodeToken(token) == null) //Si token invalide
-      navigate('/');
+        navigate('/');
     }
     else navigate('/');
-
 
     //Premier chargement
     if(!isLoaded) {
@@ -83,11 +82,6 @@ function BenevoleComponent() {
     else
       setFilteredBenevoles(benevoles)
 
-    console.log(selectedZone)
-    console.log(debut)
-    console.log(fin)
-
-
     /* if(debut != null)
       setFilteredBenevoles(filteredBenevoles.filter((item) => item.zones.find(e => e.debut >= debut.getDate())))
     if(fin != null)
@@ -103,6 +97,11 @@ function BenevoleComponent() {
   } else {
     return (
       <>
+      <Button
+        color="secondary"
+        onClick={handleDisconnect}>
+        Déconnexion
+      </Button>
       <Link to="/">Affecter des bénévoles à des zones (Redirection à faire)</Link>
       <Select
         value={selectedZone}
