@@ -9,9 +9,9 @@ import TextField from '@mui/material/TextField';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
-import Benevole from "../models/Benevole";
+import Benevole from "../../models/Benevole";
 
-export default function AddBenevoleComponent() {
+export default function AddBenevole() {
   const [nom, setNom] = useState<string>("");
   const [prenom, setPrenom] = useState<string>("");
   const [email, setEmail] = useState<string>("");

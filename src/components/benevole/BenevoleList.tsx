@@ -2,10 +2,10 @@ import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { decodeToken } from 'react-jwt';
+import { decodeToken, isExpired } from 'react-jwt';
 
-import Benevole from "../models/Benevole";
-import Zone from "../models/Zone";
+import Benevole from "../../models/Benevole";
+import Zone from "../../models/Zone";
 
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,14 +18,16 @@ import 'dayjs/locale/fr';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import BenevoleWithCreneaux from "../models/BenevoleWithCreneaux";
-import Creneau from "../models/Creneau";
+import BenevoleWithCreneaux from "../../models/BenevoleWithCreneaux";
+import Creneau from "../../models/Creneau";
 import { Checkbox } from "@mui/material";
+import BenevoleListItem from "./BenevoleListItem";
 
-function BenevoleComponent() {
+export default function BenevoleList() {
 
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const [benevoles, setBenevoles] = useState<BenevoleWithCreneaux[]>([]);
   const [filteredBenevoles, setFilteredBenevoles] = useState<BenevoleWithCreneaux[]>([]);
@@ -39,10 +41,36 @@ function BenevoleComponent() {
 
   const navigate = useNavigate();
 
+  //Vérifie que la session utilisateur est correcte
+  const authentificationValid = () => {
+    const token = localStorage.getItem('access_token');
+    let stillValid = false
+    if(token != null)
+      if(decodeToken(token) != null)
+        if(!isExpired(token))
+          stillValid = true
+    if(!stillValid)
+      navigate('/')
+  };
+  //Vérifie que l'utilisateur est admin
+  const authenficiationIsAdmin = () => {
+    const token = localStorage.getItem('access_token');
+    if(token != null) {
+      const decoded : {
+        email: string,
+        exp: number,
+        iat: number,
+        is_admin: boolean,
+        sub: number} | null = decodeToken(token)
+      if(decoded  != null)
+        setIsAdmin(decoded.is_admin)
+        
+    }
+  };
   const handleDisconnect = () => {
     localStorage.removeItem("access_token")
     navigate('/');
-  }
+  };
   const handleChangeZone = (event: SelectChangeEvent) => {
     setSelectedZone(Number(event.target.value));
   };
@@ -59,28 +87,47 @@ function BenevoleComponent() {
     setFin(newValue);
   };
 
+  const handleDeleteBenevole = (id_benevole: number) => {
+    const newList = benevoles.filter((item) => item.id_benevole !== id_benevole);
+    setBenevoles(newList);
+  }
+
   // Une seule fois
   useEffect(() => {
-    axios.get("http://localhost:3333/benevole/creneaux")
+    //Vérifie si l'utilisateur est admin
+    authenficiationIsAdmin()
+    //Liste des bénévoles et leur créneaux respectifs (vide si pas de créneau)
+    const benevoleArray : BenevoleWithCreneaux[] = [];
+
+    //D'abord fetch tous les bénévoles, ensuite on récupérera leur créneau
+    axios.get<Benevole[]>("http://localhost:3333/benevole")
     .then(res => {
-      const benevoleArray : BenevoleWithCreneaux[] = [];
       res.data.forEach((d: any) => {
-        const benevole : Benevole = new Benevole(d.benevole.id_benevole, d.benevole.prenom_benevole, d.benevole.nom_benevole, d.benevole.email_benevole, "", [d.zone])
-        const b = benevoleArray.find(b => b.id_benevole === d.id_benevole)
-        if(b === undefined)
-          benevoleArray.push(new BenevoleWithCreneaux(d.benevole.id_benevole, d.benevole.prenom_benevole, d.benevole.nom_benevole, d.benevole.email_benevole, "", [new Creneau(benevole, d.zone, d.debut, d.fin)]))
-        else
-          b.creneaux.push(new Creneau(benevole, d.zone, d.debut, d.fin))
+        benevoleArray.push(new BenevoleWithCreneaux(d.id_benevole, d.prenom_benevole, d.nom_benevole, d.email_benevole, "", d.is_admin, []))
+      });
+      //Récupération des créneaux
+      axios.get("http://localhost:3333/benevole/creneaux")
+      .then(res => {
+        res.data.forEach((d: any) => {   
+          const benevole : Benevole = new Benevole(d.benevole.id_benevole, d.benevole.prenom_benevole, d.benevole.nom_benevole, d.benevole.email_benevole, "", [d.zone])
+          const b = benevoleArray.find(b => b.id_benevole === d.id_benevole)
+          b?.creneaux.push(new Creneau(benevole, d.zone, d.debut, d.fin))
         });
-      
-      setIsLoaded(true);
-      setBenevoles(benevoleArray);
-      setFilteredBenevoles(benevoleArray)
+        
+        setIsLoaded(true);
+        setBenevoles(benevoleArray);
+        setFilteredBenevoles(benevoleArray)
+      })
+      .catch((error : AxiosError) => {
+        setIsLoaded(true);
+        setError(error);
+      })
     })
     .catch((error : AxiosError) => {
-      setIsLoaded(true);
       setError(error);
-    })
+    });
+    
+    //Récupérer la liste des zones
     axios.get<Zone[]>("http://localhost:3333/zone")
     .then(res => {
       res.data.push(new Zone(-1, "Tous", [], [])) //Pas de zone sélectionnée
@@ -94,15 +141,8 @@ function BenevoleComponent() {
 
   // Quand on modifie les poaramètres de tri
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if(token != null) { // S'il existe
-      if(decodeToken(token) == null) //Si token invalide
-        navigate('/');
-    }
-    else navigate('/');
-    
-    
-    
+    authentificationValid()
+
     let liste : BenevoleWithCreneaux[] = benevoles;
 
     if(selectedZone !== -1)
@@ -131,8 +171,12 @@ function BenevoleComponent() {
         onClick={handleDisconnect}>
         Déconnexion
       </Button>
-      <Link to="addBenevole/">Créer des comptes bénévoles (ADMIN)</Link>
-      <Link to="addCreneau/">Affecter des bénévoles à des zones (ADMIN)</Link>
+      {isAdmin &&
+        <>
+          <Link to="addBenevole/">Créer des comptes bénévoles (ADMIN)</Link>
+          <Link to="addCreneau/">Affecter des bénévoles à des zones (ADMIN)</Link>
+        </>
+      }
       <Select
         value={String(selectedZone)}
         onChange={handleChangeZone}
@@ -170,21 +214,10 @@ function BenevoleComponent() {
       </LocalizationProvider>
 
       {filteredBenevoles.map((benevole) => (
-        <div key={benevole.id_benevole+"-"+benevole.nom_benevole}>
-          <h3>{benevole.nom_benevole +" "+ benevole.prenom_benevole} (Lors d'un clique, déroulement pour voir les créneaux avec les zones)</h3>
-          <button onClick={() => {
-            axios.delete("http://localhost:3333/benevole/"+benevole.id_benevole)
-            .then(() => {
-              const newList = benevoles.filter((item) => item.id_benevole !== benevole.id_benevole);
-              setBenevoles(newList);
-             })
-          }}>Supprimer</button>
-        </div>
+        <BenevoleListItem isConnectedUserAdmin={isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
       ))}
       </>
     );
   }
 }
-    
-export default BenevoleComponent;
     

@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
+
+axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('access_token');
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { decodeToken } from 'react-jwt';
 
-import Benevole from "../models/Benevole";
-import Zone from "../models/Zone";
+import Benevole from "../../models/Benevole";
+import Zone from "../../models/Zone";
 
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,7 +20,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'dayjs/locale/fr';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-export default function AddCreneauComponent() {
+export default function AddCreneau() {
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
