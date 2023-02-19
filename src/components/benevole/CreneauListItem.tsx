@@ -1,8 +1,17 @@
 import React from 'react'
-import axios, { AxiosError } from "axios";
+import { useState } from "react";
+import axios from "axios";
 import Creneau from '../../models/Creneau'
-import { Modal, Typography } from '@mui/material';
+
+import { Modal } from '@mui/material';
 import { Box } from '@mui/system';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs, { Dayjs } from 'dayjs';
+import 'dayjs/locale/fr';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 
 interface typeProps {
   creneau: Creneau,
@@ -22,49 +31,100 @@ export default function CreneauListItem(props: typeProps) {
     width: 400,
     bgcolor: 'background.paper',
     border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
+    /*boxShadow: 24,
+    p: 4,*/
   };
+
+  const [debut, setDebut] = useState<Dayjs | null>(dayjs(c.debut));
+  const [fin, setFin] = useState<Dayjs | null>(dayjs(c.fin));
+  const handleChangeDebut = (newValue: Dayjs | null) => {
+      setDebut(newValue);
+    };
+  const handleChangeFin = (newValue: Dayjs | null) => {
+      setFin(newValue);
+    };
 
   const onClickUpdate = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const onClickDelete = () => {
-    /*axios.delete("http://localhost:3333/benevole/"+b.id_benevole)
+    const data = {
+      id_benevole: c.benevole.id_benevole,
+      id_zone: c.zone.id_zone,
+      debut: debut,
+      fin: fin
+    }
+    
+    axios.delete("http://localhost:3333/zone/creneau", {data})
     .then(() => {
-      props.onClickDelete(c.zone.id_zone, c.debut)
-    })*/
+      props.onClickDelete(c.zone.id_zone, new Date(c.debut))
+    })
   }
-//<h5> De {c.debut.} à {c.fin.toISOString}</h5>
+  const onConfirmUpdate = () => {
+    console.log(dayjs(c.debut).isSame(debut));
+    console.log(!dayjs(c.debut).isSame(debut));
+    console.log(dayjs(c.fin).isSame(fin));
+    console.log(!dayjs(c.fin).isSame(fin));
+    
+    if(!dayjs(c.debut).isSame(debut) || !dayjs(c.fin).isSame(fin)) {
+      const data = {
+        id_benevole: c.benevole.id_benevole,
+        id_zone: c.zone.id_zone,
+        debut_old: c.debut,
+        debut_new: debut,
+        fin: fin
+      }
+      axios.put("http://localhost:3333/zone/creneau", data)
+      .then(() => {
+        if(debut)
+          c.debut = debut.toDate()
+        if(fin)
+          c.fin = fin.toDate()
+        console.log("modifié ?")
+      })
+    }
+  }
+
   return (
-    <div>
+    <>
       <div>
         <h5>Zone affectée : {c.zone.nom_zone}</h5>
-        
+        <h5> De {dayjs(new Date(c.debut)).format('LLLL')} à {dayjs(new Date(c.fin)).format('LLLL')}</h5>
       </div>
+
+      {props.isConnectedUserAdmin &&
       <>
-        {props.isConnectedUserAdmin &&
-        <>
-          <button onClick={() => onClickUpdate()}>Modifier</button>
-          <button onClick={() => onClickDelete()}>Supprimer</button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                FOrmulaire pour modifier les dates
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-              </Typography>
-            </Box>
-          </Modal>
-        </>
-        }
+        <button onClick={() => onClickUpdate()}>Modifier</button>
+        <button onClick={() => onClickDelete()}>Supprimer</button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+              Modification des dates
+            <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
+              <Stack component="form" noValidate spacing={3}>
+                <DateTimePicker
+                  label="Début"
+                  value={debut}
+                  onChange={handleChangeDebut}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+                <DateTimePicker
+                  label="Fin"
+                  value={fin}
+                  onChange={handleChangeFin}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </Stack>
+            </LocalizationProvider>
+            <button onClick={() => onConfirmUpdate()}>Confirmer</button>
+          </Box>
+        </Modal>
       </>
-    </div>
+      }
+    </>
   )
 }

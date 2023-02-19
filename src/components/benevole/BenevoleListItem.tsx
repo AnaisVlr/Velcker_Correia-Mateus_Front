@@ -1,8 +1,7 @@
 import React from 'react'
-import axios, { AxiosError } from "axios";
-import Benevole from "../../models/Benevole";
+import axios from "axios";
 import BenevoleWithCreneaux from '../../models/BenevoleWithCreneaux';
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CreneauListItem from './CreneauListItem';
 import Creneau from '../../models/Creneau';
@@ -28,7 +27,7 @@ export default function BenevoleListItem(props: typeProps) {
     })
   }
   const handleDeleteCreneau = (id_zone: number, debut: Date) => {
-    const newList = creneaux.filter((item) => item.zone.id_zone !== id_zone && item.debut !== debut);
+    const newList = creneaux.filter((item) => item.zone.id_zone !== id_zone && new Date(item.debut).getTime() !== debut.getTime());
     setCreneaux(newList);
   }
 
@@ -39,22 +38,18 @@ export default function BenevoleListItem(props: typeProps) {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography>
             {b.nom_benevole +" "+ b.prenom_benevole}
             {props.isConnectedUserAdmin &&
               <button onClick={() => onClickDelete()}>Supprimer</button>
             }
-          </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            {creneaux.length == 0 &&
+            {creneaux.length === 0 &&
               <p>Aucunes zones affectées </p>
             }
             {creneaux.map((creneau) => (
               <CreneauListItem creneau={creneau} isConnectedUserAdmin={props.isConnectedUserAdmin} onClickDelete={handleDeleteCreneau} key={b.id_benevole+"-"+creneau.zone.id_zone+"-"+creneau.debut}/>
             ))}
-          </Typography>
         </AccordionDetails>
       </Accordion>
   )
