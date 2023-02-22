@@ -1,9 +1,12 @@
+import '../../styles/BenevoleList.css'
+
 import React from 'react'
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Creneau from '../../models/Creneau'
 
 import { Modal } from '@mui/material';
+import Alert from '@mui/material/Alert';
 import { Box } from '@mui/system';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -21,6 +24,9 @@ interface typeProps {
 
 export default function CreneauListItem(props: typeProps) {
   const c : Creneau = props.creneau
+
+  const [error, setError] = useState<AxiosError | null>(null);
+  const [success, setSuccess] = useState<String | null>(null);
 
   const [open, setOpen] = React.useState(false);
   const style = {
@@ -55,17 +61,18 @@ export default function CreneauListItem(props: typeProps) {
       fin: fin
     }
     
-    axios.delete("http://localhost:3333/zone/creneau", {data})
+   axios.delete("http://localhost:3333/zone/creneau", {data})
     .then(() => {
       props.onClickDelete(c.zone.id_zone, new Date(c.debut))
+      setSuccess("Suppression réussie !")
     })
-  }
+    .catch((error : AxiosError) => {
+      error.message = "Erreur lors de la tentative de suppression : "+error.message
+      setError(error);
+    });
+  };
   const onConfirmUpdate = () => {
-    console.log(dayjs(c.debut).isSame(debut));
-    console.log(!dayjs(c.debut).isSame(debut));
-    console.log(dayjs(c.fin).isSame(fin));
-    console.log(!dayjs(c.fin).isSame(fin));
-    
+
     if(!dayjs(c.debut).isSame(debut) || !dayjs(c.fin).isSame(fin)) {
       const data = {
         id_benevole: c.benevole.id_benevole,
@@ -80,13 +87,27 @@ export default function CreneauListItem(props: typeProps) {
           c.debut = debut.toDate()
         if(fin)
           c.fin = fin.toDate()
-        console.log("modifié ?")
+        setSuccess("Modification effectuée !")
       })
+      .catch((error : AxiosError) => {
+        error.message = "Erreur lors de la tentative de modification : "+error.message
+        setError(error);
+      });
     }
-  }
+  };
 
   return (
     <>
+      {error &&
+        <Alert onClose={() => {setError(null)}} severity="error">
+          {error.message}
+        </Alert>
+      }
+      {success &&
+        <Alert onClose={() => {setSuccess(null)}} severity="success">
+          {success}
+        </Alert>
+      }
       <div>
         <h5>Zone affectée : {c.zone.nom_zone}</h5>
         <h5> De {dayjs(new Date(c.debut)).format('LLLL')} à {dayjs(new Date(c.fin)).format('LLLL')}</h5>

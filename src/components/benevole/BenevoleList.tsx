@@ -1,3 +1,5 @@
+import '../../styles/BenevoleList.css'
+
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
@@ -20,7 +22,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import BenevoleWithCreneaux from "../../models/BenevoleWithCreneaux";
 import Creneau from "../../models/Creneau";
-import { Checkbox } from "@mui/material";
+import { Checkbox, List, ListItem } from "@mui/material";
 import BenevoleListItem from "./BenevoleListItem";
 
 export default function BenevoleList() {
@@ -166,56 +168,63 @@ export default function BenevoleList() {
   } else {
     return (
       <>
-      <Button
-        color="secondary"
-        onClick={handleDisconnect}>
-        Déconnexion
-      </Button>
-      {isAdmin &&
-        <>
-          <Link to="addBenevole/">Créer des comptes bénévoles (ADMIN)</Link>
-          <Link to="addCreneau/">Affecter des bénévoles à des zones (ADMIN)</Link>
-        </>
-      }
-      <Select
-        value={String(selectedZone)}
-        onChange={handleChangeZone}
-      >
-        {zones.map((i) => (
-          <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
-        ))}
-      </Select>
+        <Button
+          color="secondary"
+          onClick={handleDisconnect}>
+          Déconnexion
+        </Button>
+        {isAdmin &&
+          <>
+            <Link to="addBenevole/">Créer des comptes bénévoles (ADMIN)</Link>
+            <Link to="addCreneau/">Affecter des bénévoles à des zones (ADMIN)</Link>
+          </>
+        }
 
-      <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
-        <Stack component="form" noValidate spacing={3}>
-          <Checkbox
-            checked={debutActive}
-            onChange={handleChangeDebutActive}
-          />
-          <DateTimePicker
-            disabled={!debutActive}
-            label="Début"
-            value={debut}
-            onChange={handleChangeDebut}
-            renderInput={(params) => <TextField {...params} />}
-          />
-          <Checkbox
-            checked={finActive}
-            onChange={handleChangeFinActive}
-          />
-          <DateTimePicker
-            disabled={!finActive}
-            label="Fin"
-            value={fin}
-            onChange={handleChangeFin}
-            renderInput={(params) => <TextField {...params} />}
-          />
+        <Stack direction="row" spacing={3}>
+          <p>Zone : </p>
+          <Select
+            value={String(selectedZone)}
+            onChange={handleChangeZone}
+          >
+            {zones.map((i) => (
+              <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
+            ))}
+          </Select>
+
+          <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
+            <Checkbox
+              checked={debutActive}
+              onChange={handleChangeDebutActive}
+            />
+            <DateTimePicker
+              disabled={!debutActive}
+              label="Début"
+              value={debut}
+              onChange={handleChangeDebut}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <Checkbox
+              checked={finActive}
+              onChange={handleChangeFinActive}
+            />
+            <DateTimePicker
+              disabled={!finActive}
+              label="Fin"
+              value={fin}
+              onChange={handleChangeFin}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+
         </Stack>
-      </LocalizationProvider>
 
-      {filteredBenevoles.map((benevole) => (
-        <BenevoleListItem isConnectedUserAdmin={isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
-      ))}
+        <List className="benevoleList">
+          {filteredBenevoles.map((benevole) => (
+            <ListItem className='benevoleListItem'>
+              <BenevoleListItem isConnectedUserAdmin={isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
+            </ListItem>
+          ))}
+        </List>
       </>
     );
   }
