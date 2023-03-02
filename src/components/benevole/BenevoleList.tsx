@@ -131,7 +131,7 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
     return <LoadingPage></LoadingPage>
   } else {
     return (
-      <div>
+      <>
         {props.isAdmin &&
         <>
           <Link to="addBenevole/">Créer des comptes bénévoles (ADMIN)</Link>
@@ -179,7 +179,7 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
         <List className="benevoleList">
           {filteredBenevoles.map((benevole) => (
             <ListItem className='benevoleListItem'>
-              <BenevoleListItem isConnectedUserAdmin={isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
+              <BenevoleListItem isConnectedUserAdmin={props.isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
             </ListItem>
           ))}
         </List>
@@ -187,4 +187,3 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
     );
   }
 }
-    
