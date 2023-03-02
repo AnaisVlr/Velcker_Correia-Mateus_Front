@@ -23,6 +23,8 @@ export default function NavigationBar(props: { page: String; }) {
         if(!isExpired(token)) { //Et s'il a expiré
           stillValid = true
           setIsConnected(true)
+          let decoded : any = decodeToken(token)
+          setEmail(decoded.email)
         }else{
           setIsConnected(false)
         }
@@ -80,7 +82,7 @@ export default function NavigationBar(props: { page: String; }) {
                 divider={<Divider orientation="vertical" flexItem />}
                 spacing={2}
               >
-                <Link to="/:user">
+                <Link to={"/profil/"+email }>
                     Mon profil
                 </Link>
                 <button onClick={handleDisconnect}>

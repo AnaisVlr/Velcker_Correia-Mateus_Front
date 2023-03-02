@@ -3,8 +3,7 @@ import '../../styles/BenevoleList.css'
 import React from 'react'
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { decodeToken } from 'react-jwt';
 
 import TextField from '@mui/material/TextField';
