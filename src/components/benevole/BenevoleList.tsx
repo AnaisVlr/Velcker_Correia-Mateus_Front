@@ -1,15 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { decodeToken, isExpired } from 'react-jwt';
 
 import Benevole from "../../models/Benevole";
 import Zone from "../../models/Zone";
 
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Button from "@mui/material/Button";
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
@@ -22,12 +19,11 @@ import BenevoleWithCreneaux from "../../models/BenevoleWithCreneaux";
 import Creneau from "../../models/Creneau";
 import { Checkbox } from "@mui/material";
 import BenevoleListItem from "./BenevoleListItem";
+import LoadingPage from "../LoadingPage";
 
-export default function BenevoleList() {
-
+export default function BenevoleList(props: { isAdmin: boolean; }) {
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const [benevoles, setBenevoles] = useState<BenevoleWithCreneaux[]>([]);
   const [filteredBenevoles, setFilteredBenevoles] = useState<BenevoleWithCreneaux[]>([]);
@@ -39,50 +35,22 @@ export default function BenevoleList() {
   const [fin, setFin] = useState<Dayjs | null>(dayjs('2030-01-01T00:00:00'));
   const [finActive, setFinActive] = useState<boolean>(false)
 
-  const navigate = useNavigate();
-
-  //Vérifie que la session utilisateur est correcte
-  const authentificationValid = () => {
-    const token = localStorage.getItem('access_token');
-    let stillValid = false
-    if(token != null)
-      if(decodeToken(token) != null)
-        if(!isExpired(token))
-          stillValid = true
-    if(!stillValid)
-      navigate('/')
-  };
-  //Vérifie que l'utilisateur est admin
-  const authenficiationIsAdmin = () => {
-    const token = localStorage.getItem('access_token');
-    if(token != null) {
-      const decoded : {
-        email: string,
-        exp: number,
-        iat: number,
-        is_admin: boolean,
-        sub: number} | null = decodeToken(token)
-      if(decoded  != null)
-        setIsAdmin(decoded.is_admin)
-        
-    }
-  };
-  const handleDisconnect = () => {
-    localStorage.removeItem("access_token")
-    navigate('/');
-  };
   const handleChangeZone = (event: SelectChangeEvent) => {
     setSelectedZone(Number(event.target.value));
   };
+
   const handleChangeDebutActive = (event: any) => {
     setDebutActive(event.target.checked)
   };
+
   const handleChangeDebut = (newValue: Dayjs | null) => {
     setDebut(newValue);
   };
+
   const handleChangeFinActive = (event: any) => {
     setFinActive(event.target.checked)
   };
+  
   const handleChangeFin = (newValue: Dayjs | null) => {
     setFin(newValue);
   };
@@ -94,8 +62,6 @@ export default function BenevoleList() {
 
   // Une seule fois
   useEffect(() => {
-    //Vérifie si l'utilisateur est admin
-    authenficiationIsAdmin()
     //Liste des bénévoles et leur créneaux respectifs (vide si pas de créneau)
     const benevoleArray : BenevoleWithCreneaux[] = [];
 
@@ -141,8 +107,6 @@ export default function BenevoleList() {
 
   // Quand on modifie les poaramètres de tri
   useEffect(() => {
-    authentificationValid()
-
     let liste : BenevoleWithCreneaux[] = benevoles;
 
     if(selectedZone !== -1)
@@ -162,16 +126,11 @@ export default function BenevoleList() {
   if (error) {
     return <div>Erreur : {error.message}</div>;
   } else if (!isLoaded) {
-    return <div>Chargement...</div>;
+    return <LoadingPage></LoadingPage>
   } else {
     return (
-      <>
-      <Button
-        color="secondary"
-        onClick={handleDisconnect}>
-        Déconnexion
-      </Button>
-      {isAdmin &&
+      <div>
+      {props.isAdmin &&
         <>
           <Link to="addBenevole/">Créer des comptes bénévoles (ADMIN)</Link>
           <Link to="addCreneau/">Affecter des bénévoles à des zones (ADMIN)</Link>
@@ -214,9 +173,9 @@ export default function BenevoleList() {
       </LocalizationProvider>
 
       {filteredBenevoles.map((benevole) => (
-        <BenevoleListItem isConnectedUserAdmin={isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
+        <BenevoleListItem isConnectedUserAdmin={props.isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
       ))}
-      </>
+      </div>
     );
   }
 }

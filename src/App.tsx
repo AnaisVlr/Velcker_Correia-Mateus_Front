@@ -2,21 +2,20 @@ import React from 'react';
 import './styles/App.css';
 import {Routes, Route} from 'react-router-dom';
 
-import Home from './components/HomeComponent';
-import JeuComponent from './components/JeuComponent';
-import BenevoleList from './components/benevole/BenevoleList';
+import HomePage from './components/HomePage';
 import AddBenevole from './components/benevole/AddBenevole';
 import AddCreneau from './components/benevole/AddCreneau';
+import NavigationBar from './components/NavigationBar';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home/>}/>
-      <Route path="/jeux" element={ <JeuComponent/> }/>
-      <Route path="/jeux/:id" element={ <JeuComponent/> }/>
-      <Route path="/benevoles" element={ <BenevoleList/> }/>
+      <Route path="/" element={<HomePage/>}/>
+      <Route path="/jeux" element={<NavigationBar page="jeu"/>}/>
+      <Route path="/benevoles" element={ <NavigationBar page="benevole"/>}/>
       <Route path="/benevoles/addBenevole" element={ <AddBenevole/> }/>
       <Route path="/benevoles/addCreneau" element={ <AddCreneau/> }/>
+      <Route path="/zones" element={<NavigationBar page="zone"/>}/>
     </Routes>
   );
 }

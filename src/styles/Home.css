@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
+
+body{
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+}
+
+a{
+    color: #000;
+    text-decoration: none;
+}
+
+button{
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Playfair Display', serif;
+}
+
+h1{
+    text-align: center;
+}
+
+.zoneName{
+    text-align: center;
+}
+
+.css-mhc70k-MuiGrid-root {
+    justify-content: space-around
+}
