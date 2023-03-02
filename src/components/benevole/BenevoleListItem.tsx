@@ -1,3 +1,5 @@
+import '../../styles/BenevoleList.css'
+
 import React from 'react'
 import axios from "axios";
 import BenevoleWithCreneaux from '../../models/BenevoleWithCreneaux';
@@ -27,7 +29,7 @@ export default function BenevoleListItem(props: typeProps) {
     })
   }
   const handleDeleteCreneau = (id_zone: number, debut: Date) => {
-    const newList = creneaux.filter((item) => item.zone.id_zone !== id_zone && new Date(item.debut).getTime() !== debut.getTime());
+    const newList = creneaux.filter((item) => new Date(item.debut).getTime() !== debut.getTime());
     setCreneaux(newList);
   }
 
