@@ -21,7 +21,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Routes>
         <Route path="/" element={<HomePage/>}/>
-        <Route path="/jeux" element={<NavigationBar page="jeu"/>}/>
+        <Route path="/jeux" element={<NavigationBar page="jeux"/>}/>
         <Route path="/jeux/add" element={<NavigationBar page="addJeu"/>}/>
         <Route path="/benevoles" element={ <NavigationBar page="benevole"/>}/>
         <Route path="/benevoles/addBenevole" element={ <NavigationBar page="addBenevole"/> }/>

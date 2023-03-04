@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { decodeToken } from "react-jwt";
+import Jeu from "../models/Jeu";
 import AddBenevole from "./benevole/AddBenevole";
 import AddCreneau from "./benevole/AddCreneau";
 import BenevoleList from "./benevole/BenevoleList";
 import HomePage from "./HomePage";
 import AddJeu from "./jeu/AddJeu";
-import JeuComponent from "./jeu/JeuComponent";
+import JeuItem from "./jeu/JeuItem";
+import JeuxList from "./jeu/JeuxList";
 import Profil from "./Profil";
 import ZoneList from "./zone/ZoneList";
 
@@ -32,9 +34,9 @@ export default function Navigation(props: { page: String; }){
         authenficiationIsAdmin()
     },[])
 
-    if (props.page === "jeu" ){
+    if (props.page === "jeux" ){
         return (
-            <JeuComponent isAdmin={isAdmin}></JeuComponent>
+            <JeuxList isAdmin={isAdmin}></JeuxList>
         )
     } 
     else if (props.page === "benevole"){

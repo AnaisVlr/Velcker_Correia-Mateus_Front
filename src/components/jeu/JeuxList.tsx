@@ -1,19 +1,27 @@
-import { Box, Chip, Divider, FormControl, InputLabel, MenuItem, OutlinedInput, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, InputLabel, MenuItem, OutlinedInput, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import axios, { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import Jeu from "../../models/Jeu";
-import Zone from "../../models/Zone";
 import LoadingPage from "../LoadingPage";
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from "react-router-dom";
-import React from "react";
+import JeuItem from "./JeuItem";
 
 
-export default function JeuComponent(props: { isAdmin: boolean; }) {
+export default function JeuxList(props: { isAdmin: boolean; }) {
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const [jeux, setJeux] = useState<Jeu[]>([]);
+
+  const handleDeleteJeu = (id_jeu: number) => {
+    const newList = jeux.filter((item) => item.id_jeu !== id_jeu);
+    setJeux(newList);
+  }
+
+  const handleModifyJeu = (id_jeu: number) => {
+    const newList = jeux.filter((item) => item.id_jeu !== id_jeu);
+    setJeux(newList);
+  }
 
   //Lors du chargement de la page, se fait 1 seule fois
   useEffect(() => {
@@ -39,9 +47,13 @@ export default function JeuComponent(props: { isAdmin: boolean; }) {
         <p>Liste des jeux présents au festival FJM</p>
 
         <div>
-          <Link to="/jeux/add">
-            Ajouter un nouveau jeu
-          </Link>
+          {props.isAdmin &&
+          <>
+            <Link to="/jeux/add">
+              Ajouter un nouveau jeu
+            </Link>
+          </>
+          }
         </div>
 
         {/* <FormControl sx={{ m: 1, width: 300 }}>
@@ -75,18 +87,7 @@ export default function JeuComponent(props: { isAdmin: boolean; }) {
           <Table>
             <TableBody>
               {jeux.map((jeu) => (
-                <TableRow
-                  key={jeu.id_jeu}
-                >
-                  <TableCell component="th" scope="row">
-                    {jeu.nom_jeu}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Link to="/">
-                      <VisibilityIcon/>
-                    </Link>
-                  </TableCell>
-                </TableRow>
+                <JeuItem isAdmin={props.isAdmin} jeu={jeu} onClickDelete={handleDeleteJeu} onClickModify={handleModifyJeu}></JeuItem>
               ))}
             </TableBody>
           </Table>
