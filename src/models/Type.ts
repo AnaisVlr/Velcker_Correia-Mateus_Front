@@ -1,7 +1,7 @@
 export enum Type{
-    ENFANT,
-    FAMILLE,
-    AMBIANCE,
-    INITIE,
-    EXPERT
+    ENFANT = "ENFANT",
+    FAMILLE = "FAMILLE",
+    AMBIANCE = "AMBIANCE",
+    INITIE = "INITIE",
+    EXPERT = "EXPERT",
 }

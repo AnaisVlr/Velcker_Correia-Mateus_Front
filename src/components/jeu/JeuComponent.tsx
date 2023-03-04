@@ -38,6 +38,12 @@ export default function JeuComponent(props: { isAdmin: boolean; }) {
       <>
         <p>Liste des jeux présents au festival FJM</p>
 
+        <div>
+          <Link to="/jeux/add">
+            Ajouter un nouveau jeu
+          </Link>
+        </div>
+
         {/* <FormControl sx={{ m: 1, width: 300 }}>
           <InputLabel>
             Chip

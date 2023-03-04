@@ -3,8 +3,6 @@ import './styles/App.css';
 import {Routes, Route} from 'react-router-dom';
 
 import HomePage from './components/HomePage';
-import AddBenevole from './components/benevole/AddBenevole';
-import AddCreneau from './components/benevole/AddCreneau';
 import NavigationBar from './components/NavigationBar';
 
 function App() {
@@ -12,6 +10,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage/>}/>
       <Route path="/jeux" element={<NavigationBar page="jeu"/>}/>
+      <Route path="/jeux/add" element={<NavigationBar page="addJeu"/>}/>
       <Route path="/benevoles" element={ <NavigationBar page="benevole"/>}/>
       <Route path="/benevoles/addBenevole" element={ <NavigationBar page="addBenevole"/> }/>
       <Route path="/benevoles/addCreneau" element={ <NavigationBar page="addCreneau"/> }/>

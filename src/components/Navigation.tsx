@@ -4,6 +4,7 @@ import AddBenevole from "./benevole/AddBenevole";
 import AddCreneau from "./benevole/AddCreneau";
 import BenevoleList from "./benevole/BenevoleList";
 import HomePage from "./HomePage";
+import AddJeu from "./jeu/AddJeu";
 import JeuComponent from "./jeu/JeuComponent";
 import Profil from "./Profil";
 import ZoneList from "./zone/ZoneList";
@@ -59,6 +60,11 @@ export default function Navigation(props: { page: String; }){
     else if (props.page === "addCreneau"){
         return (
             <AddCreneau></AddCreneau>
+        )
+    }
+    else if (props.page === "addJeu"){
+        return (
+            <AddJeu></AddJeu>
         )
     }
     else{
