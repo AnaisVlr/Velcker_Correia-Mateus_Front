@@ -1,4 +1,5 @@
 import '../../styles/BenevoleList.css'
+import '../../styles/App.css';
 
 import React from 'react'
 import axios, { AxiosError } from "axios";
@@ -9,18 +10,13 @@ import Benevole from "../../models/Benevole";
 import Zone from "../../models/Zone";
 
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Button from "@mui/material/Button";
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Alert from '@mui/material/Alert';
+import {MenuItem, Button, Stack, TextField, Alert, Box, Container, FormControl, InputLabel} from '@mui/material';
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'dayjs/locale/fr';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { FormControl, InputLabel } from '@mui/material';
 
 export default function AddCreneau() {
   const [errorLoading, setErrorLoading] = useState<AxiosError | null>(null);
@@ -49,7 +45,9 @@ export default function AddCreneau() {
     setSelectedBenevole(event.target.value);
   };
 
-  const handleCreate = () => {
+  const handleCreate = (event: any) => {
+    event.preventDefault();
+
     if(selectedBenevole.length === 0 ||selectedZone.length === 0)
       setError(new AxiosError("Vous devez sélectionner un bénévole et une zone !"))
     else {
@@ -93,73 +91,94 @@ export default function AddCreneau() {
   } else {
     return (
       <>
-        <Link to="/benevoles">Voir la liste des bénévoles</Link>
-        <Link to="/benevoles/addBenevole">Créer des comptes de bénévoles</Link>
+        <Link to="/benevoles"><Button className='bouton'>Voir la liste des bénévoles</Button></Link>
+        <Link to="/benevoles/addBenevole"><Button className='bouton'>Créer des comptes de bénévoles</Button></Link>
         
-        {error &&
-          <Alert onClose={() => {setError(null)}} severity="error">
-            {error.message}
-          </Alert>
-        }
-        {success &&
-          <Alert onClose={() => {setSuccess(null)}} severity="success">
-            {success}
-          </Alert>
-        }
-
-        <Stack direction="column" spacing={3}>
-          <FormControl>
-            <InputLabel id="zone-name-label">Zone</InputLabel>
-            <Select
-              labelId="zone-name-label"
-              value={selectedZone}
-              onChange={handleChangeZone}
-              displayEmpty
-            >
-              <MenuItem value=""></MenuItem>
-              {zones.map((z) => (
-                <MenuItem key={z.id_zone+"-"+z.nom_zone} value={z.id_zone}>{z.nom_zone}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel id="benevole-name-label">Bénévole</InputLabel>
-            <Select
-              labelId="benevole-name-label"
-              value={selectedBenevole}
-              onChange={handleChangeBenevole}
-              displayEmpty
-            >
-              <MenuItem value=""></MenuItem>
-              {benevoles.map((b) => (
-                <MenuItem key={b.id_benevole+"-"+b.nom_benevole} value={b.id_benevole}>{b.prenom_benevole+" "+b.nom_benevole}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          
-          
-          <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
+        <Container component="main" maxWidth="xs">
+          {error &&
+            <Alert onClose={() => {setError(null)}} severity="error">
+              {error.message}
+            </Alert>
+          }
+          {success &&
+            <Alert onClose={() => {setSuccess(null)}} severity="success">
+              {success}
+            </Alert>
+          }
+          <Box
+            component="form"
+            onSubmit={handleCreate}
+            noValidate
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
             <Stack direction="column" spacing={3}>
-              <DateTimePicker
-                label="Début"
-                value={debut}
-                onChange={handleChangeDebut}
-                renderInput={(params) => <TextField {...params} />}
-              />
-              <DateTimePicker
-                label="Fin"
-                value={fin}
-                onChange={handleChangeFin}
-                renderInput={(params) => <TextField {...params} />}
-              />
+              <FormControl>
+                <InputLabel id="zone-name-label">Zone</InputLabel>
+                <Select
+                  required
+                  fullWidth
+                  labelId="zone-name-label"
+                  value={selectedZone}
+                  onChange={handleChangeZone}
+                  displayEmpty
+                >
+                  <MenuItem value=""></MenuItem>
+                  {zones.map((z) => (
+                    <MenuItem key={z.id_zone+"-"+z.nom_zone} value={z.id_zone}>{z.nom_zone}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl>
+                <InputLabel id="benevole-name-label">Bénévole</InputLabel>
+                <Select
+                  required
+                  fullWidth
+                  labelId="benevole-name-label"
+                  value={selectedBenevole}
+                  onChange={handleChangeBenevole}
+                  displayEmpty
+                >
+                  <MenuItem value=""></MenuItem>
+                  {benevoles.map((b) => (
+                    <MenuItem key={b.id_benevole+"-"+b.nom_benevole} value={b.id_benevole}>{b.prenom_benevole+" "+b.nom_benevole}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              
+              
+              <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
+                <Stack direction="column" spacing={3}>
+                  <DateTimePicker
+                    label="Début"
+                    value={debut}
+                    onChange={handleChangeDebut}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                  <DateTimePicker
+                    label="Fin"
+                    value={fin}
+                    onChange={handleChangeFin}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Stack>
+              </LocalizationProvider>
+              <Button
+                className='bouton'
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Ajouter le créneau
+              </Button>
             </Stack>
-          </LocalizationProvider>
-        </Stack>
-
-        <Button
-          onClick={handleCreate}>
-          Ajouter le créneau
-        </Button>
+          </Box>
+        </Container>
       </>
     )
   }

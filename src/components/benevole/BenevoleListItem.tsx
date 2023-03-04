@@ -1,10 +1,14 @@
 import '../../styles/BenevoleList.css'
+import '../../styles/App.css';
 
 import React from 'react'
 import axios from "axios";
-import BenevoleWithCreneaux from '../../models/BenevoleWithCreneaux';
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
+
+import { Accordion, AccordionDetails, AccordionSummary, Button, Stack, Typography, Divider } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import BenevoleWithCreneaux from '../../models/BenevoleWithCreneaux';
 import CreneauListItem from './CreneauListItem';
 import Creneau from '../../models/Creneau';
 
@@ -37,20 +41,27 @@ export default function BenevoleListItem(props: typeProps) {
     <Accordion expanded={expanded} onChange={handleChange}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
         >
-            {b.nom_benevole +" "+ b.prenom_benevole}
+          <Stack direction="row" spacing={3} sx={{alignItems:'center'}}>
+            <Typography>
+              {b.nom_benevole +" "+ b.prenom_benevole}
+            </Typography>
             {props.isConnectedUserAdmin &&
-              <button onClick={() => onClickDelete()}>Supprimer</button>
+              <Button className='bouton' variant="outlined" endIcon={<DeleteIcon />} onClick={() => onClickDelete()}>
+                Supprimer
+              </Button>
             }
+          </Stack>
         </AccordionSummary>
         <AccordionDetails>
             {creneaux.length === 0 &&
               <p>Aucunes zones affectées </p>
             }
             {creneaux.map((creneau) => (
+            <>
               <CreneauListItem creneau={creneau} isConnectedUserAdmin={props.isConnectedUserAdmin} onClickDelete={handleDeleteCreneau} key={b.id_benevole+"-"+creneau.zone.id_zone+"-"+creneau.debut}/>
+              <Divider />
+            </>
             ))}
         </AccordionDetails>
       </Accordion>

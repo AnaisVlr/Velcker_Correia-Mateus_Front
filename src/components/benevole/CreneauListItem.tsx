@@ -1,20 +1,20 @@
 import '../../styles/BenevoleList.css'
+import '../../styles/App.css';
 
 import React from 'react'
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import Creneau from '../../models/Creneau'
 
-import { Modal } from '@mui/material';
-import Alert from '@mui/material/Alert';
-import { Box } from '@mui/system';
+import { Button, Container, Modal, Stack, Alert, Box, TextField, Typography } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/fr';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface typeProps {
   creneau: Creneau,
@@ -34,9 +34,10 @@ export default function CreneauListItem(props: typeProps) {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    width: '33%',
+    border: '1px solid black',
+    backgroundColor: 'white',
+    padding: '10px'
     /*boxShadow: 24,
     p: 4,*/
   };
@@ -97,55 +98,60 @@ export default function CreneauListItem(props: typeProps) {
   };
 
   return (
-    <>
-      {error &&
-        <Alert onClose={() => {setError(null)}} severity="error">
-          {error.message}
-        </Alert>
-      }
+    <Container sx={{m: 2}}>
       {success &&
         <Alert onClose={() => {setSuccess(null)}} severity="success">
           {success}
         </Alert>
       }
-      <div>
-        <h5>Zone affectée : {c.zone.nom_zone}</h5>
-        <h5> De {dayjs(new Date(c.debut)).format('LLLL')} à {dayjs(new Date(c.fin)).format('LLLL')}</h5>
-      </div>
+      <Stack direction="column">
+        <Typography>Zone affectée : {c.zone.nom_zone}</Typography>
+        <Typography> De {dayjs(new Date(c.debut)).format('LLLL')}</Typography>
+        <Typography> À {dayjs(new Date(c.fin)).format('LLLL')}</Typography>
+      </Stack>
 
       {props.isConnectedUserAdmin &&
       <>
-        <button onClick={() => onClickUpdate()}>Modifier</button>
-        <button onClick={() => onClickDelete()}>Supprimer</button>
+        <Button className='bouton' variant="outlined" onClick={() => onClickUpdate()}>
+          <EditIcon />
+        </Button>
+        <Button className='bouton' variant="outlined" onClick={() => onClickDelete()}>
+          <DeleteIcon />
+        </Button>
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>
-              Modification des dates
-            <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
-              <Stack component="form" noValidate spacing={3}>
-                <DateTimePicker
-                  label="Début"
-                  value={debut}
-                  onChange={handleChangeDebut}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-                <DateTimePicker
-                  label="Fin"
-                  value={fin}
-                  onChange={handleChangeFin}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </Stack>
-            </LocalizationProvider>
-            <button onClick={() => onConfirmUpdate()}>Confirmer</button>
-          </Box>
+          <Container>
+            {error &&
+              <Alert onClose={() => {setError(null)}} severity="error">
+                {error.message}
+              </Alert>
+            }
+            <Box sx={style}>
+                Modification des dates
+              <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
+                <Stack direction="column" component="form" noValidate spacing={3}>
+                  <DateTimePicker
+                    label="Début"
+                    value={debut}
+                    onChange={handleChangeDebut}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                  <DateTimePicker
+                    label="Fin"
+                    value={fin}
+                    onChange={handleChangeFin}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Stack>
+              </LocalizationProvider>
+              <Button className='bouton' onClick={() => onConfirmUpdate()}>Confirmer</Button>
+            </Box>
+          </Container>
         </Modal>
       </>
       }
-    </>
+    </Container>
   )
 }

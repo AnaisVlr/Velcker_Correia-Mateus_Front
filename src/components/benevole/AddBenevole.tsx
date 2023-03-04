@@ -1,16 +1,12 @@
 import '../../styles/BenevoleList.css'
+import '../../styles/App.css';
 
 import React from 'react'
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 
-import TextField from '@mui/material/TextField';
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-
+import {TextField, Box, Button, Alert, Stack, Container} from '@mui/material';
 
 export default function AddBenevole() {
   const [error, setError] = useState<AxiosError | null>(null);
@@ -50,59 +46,73 @@ export default function AddBenevole() {
 
   return (
     <>
-      <Link to="/benevoles">Voir la liste des bénévoles</Link>
-      <Link to="/benevoles/addCreneau">Affecter des bénévoles à des zones</Link>
+      <Link to="/benevoles"><Button className='bouton'>Voir la liste des bénévoles</Button></Link>
+      <Link to="/benevoles/addCreneau"><Button className='bouton'>Affecter des bénévoles à des zones</Button></Link>
 
-      {error &&
-        <Alert onClose={() => {setError(null)}} severity="error">
-          {error.message}
-        </Alert>
-      }
-      {success &&
-        <Alert onClose={() => {setSuccess(null)}} severity="success">
-          {success}
-        </Alert>
-      }
-
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        noValidate
-      >
-        <Stack direction="column">
+      <Container component="main" maxWidth="xs">
+        {error &&
+          <Alert onClose={() => {setError(null)}} severity="error">
+            {error.message}
+          </Alert>
+        }
+        {success &&
+          <Alert onClose={() => {setSuccess(null)}} severity="success">
+            {success}
+          </Alert>
+        }
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <TextField
-            id="nom-textfield"
+            margin="normal"
             required
+            fullWidth
+            id="nom-textfield"
             label="Nom"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNom(event.target.value);}}
           />
           <TextField
-            id="prenom-textfield"
+            margin="normal"
             required
+            fullWidth
+            id="prenom-textfield"
             label="Prénom"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPrenom(event.target.value);}}
           />
           <TextField
-            id="email-textfield"
+            margin="normal"
             required
+            fullWidth
+            id="email-textfield"
             label="Email"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}}
           />
           <TextField
-            id="password-textfield"
+            margin="normal"
             required
+            fullWidth
+            id="password-textfield"
             label="Mot de passe"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
           />
           <Button
+            className='bouton'
             type="submit"
             fullWidth
             variant="contained"
           >
             Créer le compte
           </Button>
-        </Stack>
-      </Box>
+        </Box>
+      </Container>
     </>
   )
 }

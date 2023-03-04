@@ -1,14 +1,10 @@
+import '../styles/App.css';
+
 import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import TextField from '@mui/material/TextField';
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import { List, ListItem, ListItemText } from "@mui/material";
-import { decodeToken } from 'react-jwt';
+import { List, ListItem, ListItemText, TextField, Box, Button, Alert, Stack, Container } from "@mui/material";
 import Benevole from "../models/Benevole";
 
 export default function Profil() {
@@ -24,8 +20,6 @@ export default function Profil() {
   const [old_password, setOld_password] = useState<string>("");
   const [new_password, setNew_password] = useState<string>("");
   const [confirm_password, setConfirm_password] = useState<string>("");
-
-  const navigate = useNavigate();
 
   const handleSubmitPassword = (event: any) => {
     event.preventDefault();
@@ -70,76 +64,93 @@ export default function Profil() {
     });
     
     
-  }, [])
+  }, [user])
 
   return (
-    <>
-      {error &&
-        <Alert onClose={() => {setError(null)}} severity="error">
-          {error.message}
-        </Alert>
-      }
-      {success &&
-        <Alert onClose={() => {setSuccess(null)}} severity="success">
-          {success}
-        </Alert>
-      }
-
-    <List
-      sx={{
-        width: '100%',
-        maxWidth: 360,
-        bgcolor: 'background.paper',
-      }}
-    >
-      <ListItem>
-        <ListItemText primary="Nom" secondary={nom} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="Prénom" secondary={prenom} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="Email" secondary={email} />
-      </ListItem>
-    </List>
-
-
-      <Box
-        component="form"
-        onSubmit={handleSubmitPassword}
-        noValidate
-      >
-        <Stack direction="column">
-          <TextField
-            id="old-textfield"
-            required
-            label="Ancien mot de passe"
-            type='password'
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setOld_password(event.target.value);}}
-          />
-          <TextField
-            id="new-textfield"
-            required
-            label="Nouveau mot de passe"
-            type='password'
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNew_password(event.target.value);}}
-          />
-          <TextField
-            id="confirm-textfield"
-            required
-            label="Confirmation"
-            type='password'
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setConfirm_password(event.target.value);}}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
+    <Container>
+      <Container maxWidth="xs">
+        <List
+          sx={{
+            width: '100%',
+            maxWidth: 360,
+            bgcolor: 'background.paper',
+          }}
           >
-            Modifier le mot de passe
-          </Button>
-        </Stack>
-      </Box>
-    </>
+          <ListItem>
+            <ListItemText primary="Nom" secondary={nom} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary="Prénom" secondary={prenom} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary="Email" secondary={email} />
+          </ListItem>
+        </List>
+      </Container>
+
+
+      <Container maxWidth="xs">
+        <h1>Changement de mot de passe</h1>
+        <Box
+          component="form"
+          onSubmit={handleSubmitPassword}
+          noValidate
+          sx={{
+            marginTop: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+          >
+          <Stack direction="column">
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="old-textfield"
+              label="Ancien mot de passe"
+              type='password'
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setOld_password(event.target.value);}}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="new-textfield"
+              label="Nouveau mot de passe"
+              type='password'
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNew_password(event.target.value);}}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="confirm-textfield"
+              label="Confirmation"
+              type='password'
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setConfirm_password(event.target.value);}}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Modifier le mot de passe
+            </Button>
+          </Stack>
+          {error &&
+            <Alert onClose={() => {setError(null)}} severity="error">
+              {error.message}
+            </Alert>
+          }
+          {success &&
+            <Alert onClose={() => {setSuccess(null)}} severity="success">
+              {success}
+            </Alert>
+          }
+        </Box>
+      </Container>
+    </Container>
   )
 }

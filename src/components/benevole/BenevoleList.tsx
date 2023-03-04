@@ -1,4 +1,5 @@
 import '../../styles/BenevoleList.css'
+import '../../styles/App.css';
 
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
@@ -7,19 +8,17 @@ import { Link } from 'react-router-dom';
 import Benevole from "../../models/Benevole";
 import Zone from "../../models/Zone";
 
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import { SelectChangeEvent } from '@mui/material/Select';
+import { Checkbox, List, ListItem, TextField, Stack, MenuItem, Select, Container, Button } from "@mui/material";
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'dayjs/locale/fr';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
+
 import BenevoleWithCreneaux from "../../models/BenevoleWithCreneaux";
 import Creneau from "../../models/Creneau";
-import { Checkbox, List, ListItem } from "@mui/material";
 import BenevoleListItem from "./BenevoleListItem";
 import LoadingPage from "../LoadingPage";
 
@@ -134,47 +133,48 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
       <>
         {props.isAdmin &&
         <>
-          <Link to="addBenevole/">Créer des comptes bénévoles (ADMIN)</Link>
-          <Link to="addCreneau/">Affecter des bénévoles à des zones (ADMIN)</Link>
+          <Link to="addBenevole/"><Button className='bouton'>Créer des comptes bénévoles</Button></Link>
+          <Link to="addCreneau/"><Button className='bouton'>Affecter des bénévoles à des zones</Button></Link>
         </>
         }
-        <Stack direction="row" spacing={3}>
-          <p>Zone : </p>
-          <Select
-            value={String(selectedZone)}
-            onChange={handleChangeZone}
-          >
-            {zones.map((i) => (
-              <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
-            ))}
-          </Select>
+        <Container>
+          <Stack direction="row" spacing={3}>
+            <p>Zone : </p>
+            <Select
+              value={String(selectedZone)}
+              onChange={handleChangeZone}
+              >
+              {zones.map((i) => (
+                <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
+                ))}
+            </Select>
 
-          <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
-            <Checkbox
-              checked={debutActive}
-              onChange={handleChangeDebutActive}
-            />
-            <DateTimePicker
-              disabled={!debutActive}
-              label="Début"
-              value={debut}
-              onChange={handleChangeDebut}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            <Checkbox
-              checked={finActive}
-              onChange={handleChangeFinActive}
-            />
-            <DateTimePicker
-              disabled={!finActive}
-              label="Fin"
-              value={fin}
-              onChange={handleChangeFin}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-
-        </Stack>
+            <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
+              <Checkbox
+                checked={debutActive}
+                onChange={handleChangeDebutActive}
+                />
+              <DateTimePicker
+                disabled={!debutActive}
+                label="Début"
+                value={debut}
+                onChange={handleChangeDebut}
+                renderInput={(params) => <TextField {...params} />}
+                />
+              <Checkbox
+                checked={finActive}
+                onChange={handleChangeFinActive}
+                />
+              <DateTimePicker
+                disabled={!finActive}
+                label="Fin"
+                value={fin}
+                onChange={handleChangeFin}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Stack>
+        </Container>
 
         <List className="benevoleList">
           {filteredBenevoles.map((benevole) => (
