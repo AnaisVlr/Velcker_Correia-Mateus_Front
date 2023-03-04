@@ -72,7 +72,7 @@ export default function NavigationBar(props: { page: String; }) {
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex'} }}>
             <Link to="/">
-              FJM
+              Accueil FJM
             </Link>
           </Box>
           <Box sx={{ flexGrow: 0 }}>

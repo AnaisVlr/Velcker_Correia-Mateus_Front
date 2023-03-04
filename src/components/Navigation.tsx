@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { decodeToken } from "react-jwt";
+import AddBenevole from "./benevole/AddBenevole";
+import AddCreneau from "./benevole/AddCreneau";
 import BenevoleList from "./benevole/BenevoleList";
 import HomePage from "./HomePage";
 import JeuComponent from "./jeu/JeuComponent";
+import Profil from "./Profil";
 import ZoneList from "./zone/ZoneList";
 
 export default function Navigation(props: { page: String; }){
@@ -41,6 +44,21 @@ export default function Navigation(props: { page: String; }){
     else if (props.page === "zone"){
         return (
             <ZoneList isAdmin={isAdmin}></ZoneList>
+        )
+    }
+    else if (props.page === "profil"){
+        return (
+            <Profil></Profil>
+        )
+    }
+    else if (props.page === "addBenevole"){
+        return (
+            <AddBenevole></AddBenevole>
+        )
+    }
+    else if (props.page === "addCreneau"){
+        return (
+            <AddCreneau></AddCreneau>
         )
     }
     else{

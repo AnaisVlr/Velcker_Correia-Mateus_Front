@@ -4,8 +4,6 @@ import React from 'react'
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { decodeToken } from 'react-jwt';
 
 import Benevole from "../../models/Benevole";
 import Zone from "../../models/Zone";
@@ -37,13 +35,6 @@ export default function AddCreneau() {
   const [selectedZone, setSelectedZone] = useState<string>("");
   const [debut, setDebut] = useState<Dayjs | null>(dayjs('2023-01-01T00:00:00'));
   const [fin, setFin] = useState<Dayjs | null>(dayjs('2023-01-01T00:00:00'));
-
-  const navigate = useNavigate();
-
-  const handleDisconnect = () => {
-    localStorage.removeItem("access_token")
-    navigate('/');
-  };
 
   const handleChangeDebut = (newValue: Dayjs | null) => {
     setDebut(newValue);
@@ -78,13 +69,6 @@ export default function AddCreneau() {
     }
   }
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if(token != null) { // S'il existe
-      if(decodeToken(token) == null) //Si token invalide
-        navigate('/');
-    }
-    else navigate('/');
-
     axios.get<Benevole[]>("http://localhost:3333/benevole")
       .then(res => { 
         setBenevoles(res.data);
@@ -100,7 +84,7 @@ export default function AddCreneau() {
         setErrorLoading(error);
       })
       
-  }, [navigate])
+  }, [])
 
   if (errorLoading) {
     return <div>Erreur : {errorLoading.message}</div>;
@@ -109,11 +93,6 @@ export default function AddCreneau() {
   } else {
     return (
       <>
-        <Button
-          color="secondary"
-          onClick={handleDisconnect}>
-          Déconnexion
-        </Button>
         <Link to="/benevoles">Voir la liste des bénévoles</Link>
         <Link to="/benevoles/addBenevole">Créer des comptes de bénévoles</Link>
         

@@ -2,9 +2,8 @@ import '../../styles/BenevoleList.css'
 
 import React from 'react'
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
-import { decodeToken } from 'react-jwt';
+import { useState } from "react";
+import { Link } from 'react-router-dom';
 
 import TextField from '@mui/material/TextField';
 import Box from "@mui/material/Box";
@@ -49,31 +48,8 @@ export default function AddBenevole() {
     }
   }
 
-  const navigate = useNavigate();
-
-  const handleDisconnect = () => {
-    localStorage.removeItem("access_token")
-    navigate('/');
-  }
-
-  useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if(token != null) { // S'il existe
-      if(decodeToken(token) == null) //Si token invalide
-        navigate('/');
-    }
-    else navigate('/');
-
-    
-  }, [navigate])
-
   return (
     <>
-      <Button
-      color="secondary"
-      onClick={handleDisconnect}>
-        Déconnexion
-      </Button>
       <Link to="/benevoles">Voir la liste des bénévoles</Link>
       <Link to="/benevoles/addCreneau">Affecter des bénévoles à des zones</Link>
 

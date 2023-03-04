@@ -27,11 +27,6 @@ export default function Profil() {
 
   const navigate = useNavigate();
 
-  const handleDisconnect = () => {
-    localStorage.removeItem("access_token")
-    navigate('/');
-  }
-
   const handleSubmitPassword = (event: any) => {
     event.preventDefault();
     
@@ -62,14 +57,6 @@ export default function Profil() {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    let decoded : any = null
-    if(token != null) { // S'il existe
-      decoded = decodeToken(token)
-      if(decoded == null) //Si token invalide
-        navigate('/');
-    }
-    else navigate('/');
 
     axios.get<Benevole>("http://localhost:3333/benevole/email/"+user)
     .then(res => {
@@ -83,17 +70,10 @@ export default function Profil() {
     });
     
     
-  }, [navigate])
+  }, [])
 
   return (
     <>
-      <Button
-      color="secondary"
-      onClick={handleDisconnect}>
-        Déconnexion
-      </Button>
-      <Link to="/">Accueil</Link>
-
       {error &&
         <Alert onClose={() => {setError(null)}} severity="error">
           {error.message}

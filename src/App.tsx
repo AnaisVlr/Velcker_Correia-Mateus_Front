@@ -6,7 +6,6 @@ import HomePage from './components/HomePage';
 import AddBenevole from './components/benevole/AddBenevole';
 import AddCreneau from './components/benevole/AddCreneau';
 import NavigationBar from './components/NavigationBar';
-import Profil from './components/Profil';
 
 function App() {
   return (
@@ -14,10 +13,10 @@ function App() {
       <Route path="/" element={<HomePage/>}/>
       <Route path="/jeux" element={<NavigationBar page="jeu"/>}/>
       <Route path="/benevoles" element={ <NavigationBar page="benevole"/>}/>
-      <Route path="/benevoles/addBenevole" element={ <AddBenevole/> }/>
-      <Route path="/benevoles/addCreneau" element={ <AddCreneau/> }/>
+      <Route path="/benevoles/addBenevole" element={ <NavigationBar page="addBenevole"/> }/>
+      <Route path="/benevoles/addCreneau" element={ <NavigationBar page="addCreneau"/> }/>
       <Route path="/zones" element={<NavigationBar page="zone"/>}/>
-      <Route path="/profil/:user" element={ <Profil/> }/>
+      <Route path="/profil/:user" element={ <NavigationBar page="profil"/> }/>
     </Routes>
   );
 }
