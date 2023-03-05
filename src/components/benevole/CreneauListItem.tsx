@@ -25,10 +25,12 @@ interface typeProps {
 export default function CreneauListItem(props: typeProps) {
   const c : Creneau = props.creneau
 
-  const [error, setError] = useState<AxiosError | null>(null);
+  const [errorUpdate, setErrorUpdate] = useState<AxiosError | null>(null);
+  const [errorDelete, setErrorDelete] = useState<AxiosError | null>(null);
   const [success, setSuccess] = useState<String | null>(null);
 
-  const [open, setOpen] = React.useState(false);
+  const [openUpdate, setOpenUpdate] = React.useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
   const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -51,27 +53,12 @@ export default function CreneauListItem(props: typeProps) {
       setFin(newValue);
     };
 
-  const onClickUpdate = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const onClickUpdate = () => setOpenUpdate(true);
+  const handleCloseUpdate = () => setOpenUpdate(false);
 
-  const onClickDelete = () => {
-    const data = {
-      id_benevole: c.benevole.id_benevole,
-      id_zone: c.zone.id_zone,
-      debut: debut,
-      fin: fin
-    }
-    
-   axios.delete("http://localhost:3333/zone/creneau", {data})
-    .then(() => {
-      props.onClickDelete(c.zone.id_zone, new Date(c.debut))
-      setSuccess("Suppression réussie !")
-    })
-    .catch((error : AxiosError) => {
-      error.message = "Erreur lors de la tentative de suppression : "+error.message
-      setError(error);
-    });
-  };
+  const onClickDelete = () => setOpenDelete(true);
+  const handleCloseDelete = () => setOpenDelete(false);
+
   const onConfirmUpdate = () => {
 
     if(!dayjs(c.debut).isSame(debut) || !dayjs(c.fin).isSame(fin)) {
@@ -92,10 +79,31 @@ export default function CreneauListItem(props: typeProps) {
       })
       .catch((error : AxiosError) => {
         error.message = "Erreur lors de la tentative de modification : "+error.message
-        setError(error);
+        setErrorUpdate(error);
       });
     }
+    else {
+      setOpenUpdate(false)
+    }
   };
+  const onConfirmDelete = () => {
+    const data = {
+      id_benevole: c.benevole.id_benevole,
+      id_zone: c.zone.id_zone,
+      debut: c.debut,
+      fin: c.fin
+    };
+    
+   axios.delete("http://localhost:3333/zone/creneau", {data})
+    .then(() => {
+      props.onClickDelete(c.zone.id_zone, new Date(c.debut));
+      setSuccess("Suppression réussie !");
+    })
+    .catch((error : AxiosError) => {
+      error.message = "Erreur lors de la tentative de suppression : "+error.message;
+      setErrorDelete(error);
+    });
+  }
 
   return (
     <Container sx={{m: 2}}>
@@ -119,13 +127,13 @@ export default function CreneauListItem(props: typeProps) {
           <DeleteIcon />
         </Button>
         <Modal
-          open={open}
-          onClose={handleClose}
+          open={openUpdate}
+          onClose={handleCloseUpdate}
         >
           <Container>
-            {error &&
-              <Alert onClose={() => {setError(null)}} severity="error">
-                {error.message}
+            {errorUpdate &&
+              <Alert onClose={() => {setErrorUpdate(null)}} severity="error">
+                {errorUpdate.message}
               </Alert>
             }
             <Box sx={style}>
@@ -147,6 +155,23 @@ export default function CreneauListItem(props: typeProps) {
                 </Stack>
               </LocalizationProvider>
               <Button className='bouton' onClick={() => onConfirmUpdate()}>Confirmer</Button>
+            </Box>
+          </Container>
+        </Modal>
+        <Modal
+          open={openDelete}
+          onClose={handleCloseDelete}
+        >
+          <Container>
+            {errorDelete &&
+              <Alert onClose={() => {setErrorDelete(null)}} severity="error">
+                {errorDelete.message}
+              </Alert>
+            }
+            <Box sx={style}>
+              <Typography>Voulez-vous vraiment supprimer ce créneau ?</Typography>
+              <Button className='bouton' onClick={() => onConfirmDelete()}>Confirmer</Button>
+              <Button className='bouton' onClick={() => setOpenDelete(false)}>Annuler</Button>
             </Box>
           </Container>
         </Modal>

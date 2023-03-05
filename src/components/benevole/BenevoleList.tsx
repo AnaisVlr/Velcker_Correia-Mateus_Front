@@ -178,7 +178,7 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
 
         <List className="benevoleList">
           {filteredBenevoles.map((benevole) => (
-            <ListItem className='benevoleListItem'>
+            <ListItem key={'listitem-'+benevole.id_benevole} className='benevoleListItem'>
               <BenevoleListItem isConnectedUserAdmin={props.isAdmin} onClickDelete={handleDeleteBenevole} benevole={benevole} key={benevole.id_benevole+"-"+benevole.nom_benevole}/>
             </ListItem>
           ))}

@@ -3,12 +3,14 @@ import '../styles/App.css';
 import React from 'react'
 import { useEffect, useState } from "react";
 import {Link, useNavigate} from 'react-router-dom';
-import axios from 'axios';
+import axios, { AxiosError } from "axios";
 import { decodeToken, isExpired } from 'react-jwt';
-import {Stack, TextField, Box, Button, Divider, Typography, Avatar, Container} from '@mui/material';
+import {Stack, TextField, Box, Button, Divider, Typography, Avatar, Container, Alert} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 export default function HomePage() {
+  const [error, setError] = useState<AxiosError | null>(null);
+
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -44,21 +46,29 @@ export default function HomePage() {
 
   const handleSubmitSignIn = (event: any) => {
     event.preventDefault();
-    
-    const data = {
-      "email_benevole": email,
-      "password_benevole": password
-    }
 
-    axios.post("http://localhost:3333/auth/signin", data)
-    .then(res => {
-      console.log(res);
-      localStorage.setItem("access_token", res.data.access_token);
-      axios.defaults.headers.common['Authorization'] = "Bearer "+res.data.access_token;
-      setIsConnected(true)
-    }).catch((error) => {
-      console.log(error);
-    })
+    if(email.length === 0 || password.length === 0) {
+      setError(new AxiosError("Remplissez tous les champs"));
+    }
+    else {
+      const data = {
+        "email_benevole": email,
+        "password_benevole": password
+      }
+  
+      axios.post("http://localhost:3333/auth/signin", data)
+      .then(res => {
+        localStorage.setItem("access_token", res.data.access_token);
+        axios.defaults.headers.common['Authorization'] = "Bearer "+res.data.access_token;
+        setIsConnected(true)
+      }).catch((error) => {
+        if(error.response){
+          if(error.response.data)
+            error.message = "Erreur lors de la tentative de connexion : "+error.response.data.message;
+        } else error.message = "Erreur lors de la tentative de connexion : "+error;
+        setError(error)
+      })
+    }
   }
 
   useEffect(() => {
@@ -157,6 +167,11 @@ export default function HomePage() {
           >
             Se connecter
           </Button>
+          {error &&
+          <Alert onClose={() => {setError(null)}} severity="error">
+            {error.message}
+          </Alert>
+        }
         </Box>
       </Container>
     )
