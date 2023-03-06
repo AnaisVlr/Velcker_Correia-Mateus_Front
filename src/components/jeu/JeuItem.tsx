@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Jeu from '../../models/Jeu';
 import { Type } from '../../models/Type';
 
-export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDelete: (id: number) => void, onClickModify: (id: number) => void}){
+export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDelete: (id: number) => void}){
     const jeu = props.jeu;
 
     const navigate = useNavigate();
@@ -24,23 +24,24 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
     const [type, setType] = useState<Type>(jeu.type_jeu);
 
     const [selectedType, setSelectedType] = useState<string>(jeu.type_jeu.toString());
+    const [newName, setNewName] = useState<string>(nom);
 
     const handleChange = (event: SelectChangeEvent) => {
         setSelectedType(event.target.value);
         switch(event.target.value) {
-            case "ambiance":
+            case "AMBIANCE":
                 setType(Type.AMBIANCE);
                 break
-            case "enfant":
+            case "ENFANT":
                 setType(Type.ENFANT);
                 break
-            case "expert":
-                setType(Type.ENFANT);
+            case "EXPERT":
+                setType(Type.EXPERT);
                 break
-            case "famille":
+            case "FAMILLE":
                 setType(Type.FAMILLE);
                 break
-            case "initie":
+            case "INITIE":
                 setType(Type.INITIE);
                 break
         }
@@ -55,13 +56,13 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
         else {
             const data = {
                 "id_jeu": jeu.id_jeu.toString(),
-                "nom_jeu": nom,
+                "nom_jeu": newName,
                 "type_jeu": type
             }
         
             axios.put("http://localhost:3333/jeu", data)
             .then(res => {
-                props.onClickModify(jeu.id_jeu)
+                setNom(newName)
                 setSuccess("Modification réussie")
             }).catch((error) => {
                 if(error.response){
@@ -101,7 +102,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                 key={jeu.id_jeu}
             >
                 <TableCell component="th" scope="row">
-                {jeu.nom_jeu}
+                {nom}
                 </TableCell>
                 <TableCell align="right">
                     <Button onClick={handleClickOpen}>
@@ -124,11 +125,11 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                         {!openModify &&
                             <>
                                 <DialogTitle>
-                                    {jeu.nom_jeu}
+                                    {nom}
                                 </DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>
-                                        Type du jeu : {jeu.type_jeu}
+                                        Type du jeu : {type}
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
@@ -158,7 +159,8 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                             id="nom-textfield"
                                             required
                                             label="Nom"
-                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNom(event.target.value);}}
+                                            value={newName}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNewName(event.target.value);}}
                                         />
                                         <Select
                                             id="type-select"
@@ -166,11 +168,11 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                             label="Type"
                                             onChange={handleChange}
                                         >
-                                            <MenuItem value="ambiance">Ambiance</MenuItem>
-                                            <MenuItem value="enfant">Enfant</MenuItem>
-                                            <MenuItem value="expert">Expert</MenuItem>
-                                            <MenuItem value="famille">Famille</MenuItem>
-                                            <MenuItem value="initie">Inité</MenuItem>
+                                            <MenuItem value="AMBIANCE">Ambiance</MenuItem>
+                                            <MenuItem value="ENFANT">Enfant</MenuItem>
+                                            <MenuItem value="EXPERT">Expert</MenuItem>
+                                            <MenuItem value="FAMILLE">Famille</MenuItem>
+                                            <MenuItem value="INITIE">Inité</MenuItem>
                                         </Select>
                                         <Button
                                             type="submit"

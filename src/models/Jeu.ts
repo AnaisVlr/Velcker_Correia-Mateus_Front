@@ -11,6 +11,6 @@ export default class Jeu{
         this.id_jeu = id_jeu;
         this.nom_jeu = nom_jeu;
         this.type_jeu = type_jeu;
-        this.zones = zones;
+        this.zones = zones === undefined ? [] : zones;
     }
 }

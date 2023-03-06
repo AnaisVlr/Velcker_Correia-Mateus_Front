@@ -23,14 +23,10 @@ export default function BenevoleListItem(props: typeProps) {
   
   const [errorDelete, setErrorDelete] = React.useState<AxiosError | null>(null);
   const [openDelete, setOpenDelete] = React.useState(false);
-  const onClickDelete = () => setOpenDelete(true);
-  const handleCloseDelete = () => setOpenDelete(false);
 
   const [expanded, setExpanded] = React.useState<boolean>(false);
   const [creneaux, setCreneaux] = React.useState<Creneau[]>(b.creneaux);
-  const handleChange= () => {
-    setExpanded(!expanded);
-  }
+
   const onConfirmDelete = () => {
     axios.delete("http://localhost:3333/benevole/"+b.id_benevole)
     .then(() => {
@@ -60,7 +56,7 @@ export default function BenevoleListItem(props: typeProps) {
   };
 
   return (
-    <Accordion expanded={expanded} onChange={handleChange}>
+    <Accordion expanded={expanded} onChange={() => { setExpanded(!expanded); }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
       >
@@ -69,7 +65,7 @@ export default function BenevoleListItem(props: typeProps) {
             {b.nom_benevole +" "+ b.prenom_benevole}
           </Typography>
           {props.isConnectedUserAdmin &&
-            <Button className='bouton' variant="outlined" endIcon={<DeleteIcon />} onClick={() => onClickDelete()}>
+            <Button className='bouton' variant="outlined" endIcon={<DeleteIcon />} onClick={() => { setOpenDelete(true); }}>
               Supprimer
             </Button>
           }
@@ -80,15 +76,15 @@ export default function BenevoleListItem(props: typeProps) {
             <p>Aucunes zones affectées </p>
           }
           {creneaux.map((creneau) => (
-          <>
+          <div key={"div-creneau-"+b.id_benevole+"-"+creneau.zone.id_zone+"-"+creneau.debut}>
             <CreneauListItem creneau={creneau} isConnectedUserAdmin={props.isConnectedUserAdmin} onClickDelete={handleDeleteCreneau} key={b.id_benevole+"-"+creneau.zone.id_zone+"-"+creneau.debut}/>
             <Divider />
-          </>
+          </div>
           ))}
       </AccordionDetails>
       <Modal
           open={openDelete}
-          onClose={handleCloseDelete}
+          onClose={() => { setOpenDelete(false); }}
         >
           <Container>
             {errorDelete &&
