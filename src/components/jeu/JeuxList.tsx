@@ -1,11 +1,13 @@
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, InputLabel, MenuItem, OutlinedInput, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
 import axios, { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Jeu from "../../models/Jeu";
 import Zone from "../../models/Zone";
 import LoadingPage from "../LoadingPage";
 import { Link } from "react-router-dom";
 import JeuItem from "./JeuItem";
+import '../../styles/App.css';
+import '../../styles/Jeu.css';
 
 
 export default function JeuxList(props: { isAdmin: boolean; }) {
@@ -81,7 +83,7 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
         <div>
           {props.isAdmin &&
           <>
-            <Link to="/jeux/add">
+            <Link to="/jeux/add" className="boutonAjout">
               Ajouter un nouveau jeu
             </Link>
           </>
