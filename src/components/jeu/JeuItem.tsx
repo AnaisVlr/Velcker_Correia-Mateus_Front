@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Jeu from '../../models/Jeu';
 import { Type } from '../../models/Type';
+import '../../styles/App.css';
+import '../../styles/Jeu.css';
 
 export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDelete: (id: number) => void, onClickModify: (id: number) => void}){
     const jeu = props.jeu;
@@ -104,7 +106,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                 {jeu.nom_jeu}
                 </TableCell>
                 <TableCell align="right">
-                    <Button onClick={handleClickOpen}>
+                    <Button onClick={handleClickOpen} className="boutonJeu">
                         <VisibilityIcon/>
                     </Button>
                     <Dialog
@@ -134,15 +136,15 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                 <DialogActions>
                                     {props.isAdmin &&
                                         <>
-                                            <Button onClick={handleModify}>
+                                            <Button onClick={handleModify} className="boutonJeu">
                                                 <EditIcon/>
                                             </Button>
-                                            <Button onClick={handleDelete}>
+                                            <Button onClick={handleDelete} className="boutonJeu">
                                                 <DeleteIcon/>
                                             </Button>
                                         </>
                                     }
-                                    <Button onClick={handleClose}>Fermer</Button>
+                                    <Button onClick={handleClose} className='boutonJeu'>Fermer</Button>
                                 </DialogActions>
                             </>
                         }
@@ -173,6 +175,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                             <MenuItem value="initie">Inité</MenuItem>
                                         </Select>
                                         <Button
+                                            className="boutonJeu"
                                             type="submit"
                                             fullWidth
                                             variant="contained"
@@ -182,8 +185,8 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                     </Box>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={handleClose}>Fermer</Button>
-                                    <Button onClick={handleDelete}>
+                                    <Button onClick={handleClose} className="boutonJeu">Fermer</Button>
+                                    <Button onClick={handleDelete} className="boutonJeu">
                                         <DeleteIcon/>
                                     </Button>
                                 </DialogActions>

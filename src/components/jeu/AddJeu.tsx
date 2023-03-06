@@ -3,6 +3,8 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Type } from "../../models/Type";
+import '../../styles/App.css';
+import '../../styles/Jeu.css';
 
 export default function AddJeu() {
     const [error, setError] = useState<AxiosError | null>(null);
@@ -101,6 +103,7 @@ export default function AddJeu() {
                     <MenuItem value="initie">Inité</MenuItem>
                 </Select>
                 <Button
+                    className="boutonJeu"
                     type="submit"
                     fullWidth
                     variant="contained"

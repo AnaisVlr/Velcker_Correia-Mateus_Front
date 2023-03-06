@@ -1,0 +1,20 @@
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper{
+    height: 80%;
+    width: 80%;
+}
+
+.boutonJeu {
+    background-color: transparent !important;
+    color: black !important;
+    border: 0 !important;
+}
+
+.boutonJeu:hover, .boutonJeu:focus {
+    background-color: gray;
+}
+
+.boutonAjout{
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 5px;
+}
