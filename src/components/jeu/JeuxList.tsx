@@ -1,4 +1,3 @@
-import { Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import Jeu from "../../models/Jeu";
@@ -8,6 +7,10 @@ import { Link } from "react-router-dom";
 import JeuItem from "./JeuItem";
 import '../../styles/App.css';
 import '../../styles/Jeu.css';
+
+import { Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
+import { SelectChangeEvent } from '@mui/material/Select';
+import { Checkbox, List, ListItem, TextField, Stack, MenuItem, Select, Container, Button } from "@mui/material";
 
 
 export default function JeuxList(props: { isAdmin: boolean; }) {
@@ -19,6 +22,8 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
   const [zones, setZones] = useState<Zone[]>([]);
 
   const [selectedZone, setSelectedZone] = useState<number>(-1);
+  const [selectedType, setSelectedType] = useState<string>("TOUS");
+  const [selectedName, setSelectedName] = useState<string>("");
 
   const handleDeleteJeu = (id_jeu: number) => {
     const newList = jeux.filter((item) => item.id_jeu !== id_jeu);
@@ -61,15 +66,18 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
   useEffect(() => {
     
     let liste : Jeu[] = jeux;
-
-    console.log(selectedZone);
     
     if(selectedZone !== -1)
       liste = liste.filter((item) => item.zones.find(e => e.id_zone === selectedZone))
-      
+
+    if(selectedType !== "TOUS")
+      liste = liste.filter((item) => item.type_jeu === selectedType)
+    
+    if(selectedName.length > 0)
+      liste = liste.filter((item) => item.nom_jeu.toLowerCase().includes(selectedName.toLowerCase()))
 
     setFilteredJeux(liste)
-  }, [selectedZone])
+  }, [selectedZone, selectedType, selectedName])
 
   if (error) {
     return <div>Erreur : {error.message}</div>;
@@ -117,15 +125,31 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
             ))}
           </Select>
         </FormControl> */}
+        <TextField
+          label="Nom"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setSelectedName(event.target.value);}}
+        />
         <p>Zone : </p>
-          <Select
-            value={String(selectedZone)}
-            onChange={(event: SelectChangeEvent) => { setSelectedZone(Number(event.target.value)); }}
-            >
-            {zones.map((i) => (
-              <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
-              ))}
-          </Select>
+        <Select
+          value={String(selectedZone)}
+          onChange={(event: SelectChangeEvent) => { setSelectedZone(Number(event.target.value)); }}
+          >
+          {zones.map((i) => (
+            <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
+            ))}
+        </Select>
+        <p>Type : </p>
+        <Select
+          value={selectedType}
+          onChange={(event: SelectChangeEvent) => { setSelectedType(event.target.value) }}
+        >
+          <MenuItem value="TOUS">Tous</MenuItem>
+          <MenuItem value="AMBIANCE">Ambiance</MenuItem>
+          <MenuItem value="ENFANT">Enfant</MenuItem>
+          <MenuItem value="EXPERT">Expert</MenuItem>
+          <MenuItem value="FAMILLE">Famille</MenuItem>
+          <MenuItem value="INITIE">Inité</MenuItem>
+        </Select>
         <TableContainer>
           <Table>
             <TableBody>
