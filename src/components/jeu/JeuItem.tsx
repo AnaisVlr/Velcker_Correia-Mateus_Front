@@ -1,23 +1,24 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TableCell, TableRow, MenuItem, Select, TextField, SelectChangeEvent, Alert, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Typography, Stack, DialogActions, Button, TableCell, TableRow, MenuItem, Select, TextField, SelectChangeEvent, Alert, Box } from '@mui/material';
 import axios, { AxiosError } from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import Jeu from '../../models/Jeu';
+import Zone from "../../models/Zone";
 import { Type } from '../../models/Type';
 import '../../styles/App.css';
 import '../../styles/Jeu.css';
-import ButtonBase from '@mui/material/ButtonBase';
 
-export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDelete: (id: number) => void, onClickModify: (id: number) => void}){
+export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Zone[], onClickDelete: (id: number) => void}){
     const jeu = props.jeu;
+    if(jeu.zones === undefined)
+        jeu.zones = []
 
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
-
     const [openModify, setOpenModify] = useState(false);
 
     const [error, setError] = useState<AxiosError | null>(null);
@@ -25,25 +26,28 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
 
     const [nom, setNom] = useState<string>(jeu.nom_jeu);
     const [type, setType] = useState<Type>(jeu.type_jeu);
+    const [zones, setZones] = useState<Zone[]>(props.listZone);
 
+    const [selectedZone, setSelectedZone] = useState<number>(-1);
     const [selectedType, setSelectedType] = useState<string>(jeu.type_jeu.toString());
+    const [newName, setNewName] = useState<string>(nom);
 
     const handleChange = (event: SelectChangeEvent) => {
         setSelectedType(event.target.value);
         switch(event.target.value) {
-            case "ambiance":
+            case "AMBIANCE":
                 setType(Type.AMBIANCE);
                 break
-            case "enfant":
+            case "ENFANT":
                 setType(Type.ENFANT);
                 break
-            case "expert":
-                setType(Type.ENFANT);
+            case "EXPERT":
+                setType(Type.EXPERT);
                 break
-            case "famille":
+            case "FAMILLE":
                 setType(Type.FAMILLE);
                 break
-            case "initie":
+            case "INITIE":
                 setType(Type.INITIE);
                 break
         }
@@ -58,13 +62,13 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
         else {
             const data = {
                 "id_jeu": jeu.id_jeu.toString(),
-                "nom_jeu": nom,
+                "nom_jeu": newName,
                 "type_jeu": type
             }
         
             axios.put("http://localhost:3333/jeu", data)
             .then(res => {
-                props.onClickModify(jeu.id_jeu)
+                setNom(newName)
                 setSuccess("Modification réussie")
             }).catch((error) => {
                 if(error.response){
@@ -76,19 +80,6 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
         }
     }
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        setOpenModify(false);
-    };
-
-    const handleModify = () => {
-        setOpenModify(true);
-    }
-
     const handleDelete = () => {
         axios.delete("http://localhost:3333/jeu/"+jeu.id_jeu)
         .then(() => {
@@ -97,6 +88,58 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
         })
         
     }
+    const handleAffectation = () => {
+        if(selectedZone !== -1) {
+            const data = {
+                id_jeu: jeu.id_jeu,
+                id_zone: selectedZone
+            };
+            axios.post("http://localhost:3333/zone/jeu", data)
+            .then(res => {
+                let z : Zone | undefined = zones.find(z => z.id_zone === selectedZone);
+                if(z !== undefined){
+                    jeu.zones.push(z);
+                    setZones(zones.filter(zone => zone.id_zone !== selectedZone))
+                }
+                setSelectedZone(-1);
+                setSuccess("Affectation réussie");
+            })
+            .catch((error : AxiosError) => {
+                setError(error);
+            })
+        }
+    }
+    const handleRemoveAffectation = (id_zone: number) => {
+        axios.delete("http://localhost:3333/zone/"+id_zone+"/"+jeu.id_jeu)
+        .then(res => {
+            let z : Zone | undefined = jeu.zones.find(z => z.id_zone === id_zone);
+            if(z !== undefined){
+                jeu.zones = jeu.zones.filter(zone => zone.id_zone !== id_zone)
+                let listZone : Zone[] = zones;
+                listZone.push(z)
+                setZones(listZone)
+            }
+            setSuccess("Suppression réussie");
+        })
+        .catch((error : AxiosError) => {
+            setError(error);
+        })
+    }
+
+    useEffect(() => {
+        //Retirer de la liste des zones, les zones où le jeu est déjà affecté
+        let listIdZone : Number[] = []
+        jeu.zones.forEach((z : Zone) => {
+            listIdZone.push(z.id_zone)
+        });
+        
+
+        let listZone : Zone[] = []
+        listZone.push(new Zone(-1, "Aucune sélectionnée", [], []))
+        listZone = props.listZone.filter((z : Zone) =>  !listIdZone.includes(z.id_zone) && z.id_zone !== -1)
+        setZones(listZone);
+        
+    }, [jeu.zones])
 
     return (
         <>
@@ -104,15 +147,15 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                 key={jeu.id_jeu}
             >
                 <TableCell component="th" scope="row">
-                {jeu.nom_jeu}
+                {nom}
                 </TableCell>
                 <TableCell align="right">
-                    <Button onClick={handleClickOpen}>
+                    <Button onClick={() => { setOpen(true); }}>
                         <VisibilityIcon/>
                     </Button>
                     <Dialog
                         open={open}
-                        onClose={handleClose}
+                        onClose={() => { setOpen(false); setOpenModify(false); }}
                     >
                         {error &&
                             <Alert onClose={() => {setError(null)}} severity="error">
@@ -127,17 +170,60 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                         {!openModify &&
                             <>
                                 <DialogTitle>
-                                    {jeu.nom_jeu}
+                                    {nom}
                                 </DialogTitle>
                                 <DialogContent>
-                                    <DialogContentText>
-                                        Type du jeu : {jeu.type_jeu}
-                                    </DialogContentText>
+                                    <Stack direction="row">
+                                        <Stack direction="column" spacing={2}>
+                                            <Typography>Type du jeu : {type}</Typography>
+                                            {jeu.zones.length === 0 && 
+                                                <Typography>Pas d'affectation</Typography>
+                                            }
+                                            {jeu.zones.length > 0 &&
+                                                <>
+                                                    <Typography>Affectation :</Typography>
+                                                    {jeu.zones.map((zone:Zone) => (
+                                                        <Stack key={"jeu-zone-"+jeu.id_jeu+zone.id_zone} direction="row">
+                                                            <Typography >{zone.nom_zone}</Typography>
+                                                            {props.isAdmin &&
+                                                                <Button onClick={() => handleRemoveAffectation(zone.id_zone)}>
+                                                                    <DeleteIcon/>
+                                                                </Button>
+                                                            }
+                                                        </Stack>
+                                                    ))}
+                                                </>
+                                            }
+                                        </Stack>
+                                        {props.isAdmin && 
+                                            <Stack direction="column">
+                                                <p>Zone : </p>
+                                                <Select
+                                                    color='primary'
+                                                    value={String(selectedZone)}
+                                                    onChange={(event: SelectChangeEvent) => { setSelectedZone(Number(event.target.value)); }}
+                                                    >
+                                                    {zones.map((i:any) => (
+                                                        <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                                <Button
+                                                    sx={{textTransform:'none'}}
+                                                    type="submit"
+                                                    fullWidth
+                                                    variant="contained"
+                                                    onClick={handleAffectation}
+                                                >
+                                                    Affecter
+                                                </Button>
+                                            </Stack>
+                                        }
+                                    </Stack>
                                 </DialogContent>
                                 <DialogActions>
                                     {props.isAdmin &&
                                         <>
-                                            <Button onClick={handleModify}>
+                                            <Button onClick={() => { setOpenModify(true); }}>
                                                 <EditIcon/>
                                             </Button>
                                             <Button onClick={handleDelete}>
@@ -145,7 +231,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                             </Button>
                                         </>
                                     }
-                                    <Button onClick={handleClose}>Fermer</Button>
+                                    <Button sx={{textTransform:'none'}} onClick={() => { setOpen(false); setOpenModify(false); }}>Fermer</Button>
                                 </DialogActions>
                             </>
                         }
@@ -160,33 +246,36 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                         <TextField
                                             id="nom-textfield"
                                             required
+                                            color='primary'
                                             label="Nom"
-                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNom(event.target.value);}}
+                                            value={newName}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNewName(event.target.value);}}
                                         />
                                         <Select
                                             id="type-select"
+                                            color='primary'
                                             value={selectedType}
                                             label="Type"
                                             onChange={handleChange}
                                         >
-                                            <MenuItem value="ambiance">Ambiance</MenuItem>
-                                            <MenuItem value="enfant">Enfant</MenuItem>
-                                            <MenuItem value="expert">Expert</MenuItem>
-                                            <MenuItem value="famille">Famille</MenuItem>
-                                            <MenuItem value="initie">Inité</MenuItem>
+                                            <MenuItem value="AMBIANCE">Ambiance</MenuItem>
+                                            <MenuItem value="ENFANT">Enfant</MenuItem>
+                                            <MenuItem value="EXPERT">Expert</MenuItem>
+                                            <MenuItem value="FAMILLE">Famille</MenuItem>
+                                            <MenuItem value="INITIE">Inité</MenuItem>
                                         </Select>
                                         <Button
                                             type="submit"
                                             fullWidth
                                             variant="contained"
-                                            sx={{textTransform: 'none'}}
+                                            sx={{textTransform:'none'}}
                                         >
                                             Modifier le jeu
                                         </Button>
                                     </Box>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button sx={{textTransform: 'none'}} onClick={handleClose}>Fermer</Button>
+                                    <Button sx={{textTransform:'none'}} onClick={() => { setOpen(false); setOpenModify(false); }}>Fermer</Button>
                                     <Button onClick={handleDelete}>
                                         <DeleteIcon/>
                                     </Button>

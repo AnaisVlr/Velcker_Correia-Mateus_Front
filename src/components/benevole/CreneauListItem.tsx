@@ -46,18 +46,6 @@ export default function CreneauListItem(props: typeProps) {
 
   const [debut, setDebut] = useState<Dayjs | null>(dayjs(c.debut));
   const [fin, setFin] = useState<Dayjs | null>(dayjs(c.fin));
-  const handleChangeDebut = (newValue: Dayjs | null) => {
-      setDebut(newValue);
-    };
-  const handleChangeFin = (newValue: Dayjs | null) => {
-      setFin(newValue);
-    };
-
-  const onClickUpdate = () => setOpenUpdate(true);
-  const handleCloseUpdate = () => setOpenUpdate(false);
-
-  const onClickDelete = () => setOpenDelete(true);
-  const handleCloseDelete = () => setOpenDelete(false);
 
   const onConfirmUpdate = () => {
 
@@ -120,15 +108,15 @@ export default function CreneauListItem(props: typeProps) {
 
       {props.isConnectedUserAdmin &&
       <>
-        <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onClickUpdate()}>
+        <Button sx={{textTransform: 'none'}} variant="outlined" onClick={() => { setOpenUpdate(true) }}>
           <EditIcon />
         </Button>
-        <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onClickDelete()}>
+        <Button sx={{textTransform: 'none'}} variant="outlined" onClick={() => { setOpenDelete(true) }}>
           <DeleteIcon />
         </Button>
         <Modal
           open={openUpdate}
-          onClose={handleCloseUpdate}
+          onClose={() => { setOpenUpdate(false) }}
         >
           <Container>
             {errorUpdate &&
@@ -143,13 +131,13 @@ export default function CreneauListItem(props: typeProps) {
                   <DateTimePicker
                     label="Début"
                     value={debut}
-                    onChange={handleChangeDebut}
+                    onChange={(newValue: Dayjs | null) => { setDebut(newValue); }}
                     renderInput={(params) => <TextField {...params} />}
                   />
                   <DateTimePicker
                     label="Fin"
                     value={fin}
-                    onChange={handleChangeFin}
+                    onChange={(newValue: Dayjs | null) => { setFin(newValue); }}
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </Stack>
@@ -160,7 +148,7 @@ export default function CreneauListItem(props: typeProps) {
         </Modal>
         <Modal
           open={openDelete}
-          onClose={handleCloseDelete}
+          onClose={() => { setOpenDelete(false) }}
         >
           <Container>
             {errorDelete &&

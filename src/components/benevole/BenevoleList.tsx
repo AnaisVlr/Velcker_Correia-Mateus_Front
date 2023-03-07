@@ -36,26 +36,6 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
   const [fin, setFin] = useState<Dayjs | null>(dayjs('2030-01-01T00:00:00'));
   const [finActive, setFinActive] = useState<boolean>(false)
 
-  const handleChangeZone = (event: SelectChangeEvent) => {
-    setSelectedZone(Number(event.target.value));
-  };
-
-  const handleChangeDebutActive = (event: any) => {
-    setDebutActive(event.target.checked)
-  };
-
-  const handleChangeDebut = (newValue: Dayjs | null) => {
-    setDebut(newValue);
-  };
-
-  const handleChangeFinActive = (event: any) => {
-    setFinActive(event.target.checked)
-  };
-  
-  const handleChangeFin = (newValue: Dayjs | null) => {
-    setFin(newValue);
-  };
-
   const handleDeleteBenevole = (id_benevole: number) => {
     const newList = benevoles.filter((item) => item.id_benevole !== id_benevole);
     setBenevoles(newList);
@@ -142,7 +122,7 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
             <p>Zone : </p>
             <Select
               value={String(selectedZone)}
-              onChange={handleChangeZone}
+              onChange={(event: SelectChangeEvent) => { setSelectedZone(Number(event.target.value)); }}
               >
               {zones.map((i) => (
                 <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
@@ -152,24 +132,24 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
             <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
               <Checkbox
                 checked={debutActive}
-                onChange={handleChangeDebutActive}
+                onChange={(event: any) => { setDebutActive(event.target.checked); }}
                 />
               <DateTimePicker
                 disabled={!debutActive}
                 label="Début"
                 value={debut}
-                onChange={handleChangeDebut}
+                onChange={(newValue: Dayjs | null) => { setDebut(newValue); }}
                 renderInput={(params) => <TextField {...params} />}
                 />
               <Checkbox
                 checked={finActive}
-                onChange={handleChangeFinActive}
+                onChange={(event: any) => { setFinActive(event.target.checked) }}
                 />
               <DateTimePicker
                 disabled={!finActive}
                 label="Fin"
                 value={fin}
-                onChange={handleChangeFin}
+                onChange={(newValue: Dayjs | null) => { setFin(newValue); }}
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>

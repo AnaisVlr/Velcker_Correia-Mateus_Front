@@ -1,3 +1,4 @@
+import '../styles/HomePage.css';
 import '../styles/App.css';
 import React from 'react'
 import { useEffect, useState } from "react";
@@ -76,7 +77,7 @@ export default function HomePage() {
   
   if(isConnected){
     return (
-      <>
+      <div className='homePage'>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent : 'flex-end', textAlign: 'center' }}>
           <div>
             <Stack
@@ -115,65 +116,68 @@ export default function HomePage() {
           <Link to="/benevoles">Bénévoles</Link>
           </div>
         </Stack>
-      </>
+      </div>
     )
   }else{
     return (
-      <Container component="main" maxWidth="xs">
-        <Box
-          component="form"
-          onSubmit={handleSubmitSignIn}
-          noValidate
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'warning.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Connexion
-          </Typography>
-          <TextField
-            margin="normal"
-            required
-            color='primary'
-            fullWidth
-            id="emailIn-textfield"
-            name="email"
-            label="Email"
-            autoComplete="email"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}}
-          />
-          <TextField
-            margin="normal"
-            color='primary'
-            required
-            fullWidth
-            id="passwordIn-textfield"
-            label="Mot de passe"
-            autoComplete="current-password"
-            type='password'
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="outlined"
-            sx={{ mt: 3, mb: 2, textTransform: 'none'}}
-          >
-            Se connecter
-          </Button>
-          {error &&
-          <Alert onClose={() => {setError(null)}} severity="error">
-            {error.message}
-          </Alert>
-        }
-        </Box>
-      </Container>
+      <div className="homePage">
+        <Container component="main" maxWidth="xs">
+          <Box
+            component="form"
+            onSubmit={handleSubmitSignIn}
+            noValidate
+            sx={{
+              paddingTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+            >
+            <Avatar sx={{ m: 1, bgcolor: 'warning.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Connexion
+            </Typography>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              color='primary'
+              id="emailIn-textfield"
+              name="email"
+              label="Email"
+              autoComplete="email"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              color='primary'
+              id="passwordIn-textfield"
+              label="Mot de passe"
+              autoComplete="current-password"
+              type='password'
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
+            />
+            <Button
+              className='bouton'
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, textTransform: 'none' }}
+            >
+              Se connecter
+            </Button>
+            {error &&
+            <Alert onClose={() => {setError(null)}} severity="error">
+              {error.message}
+            </Alert>
+          }
+          </Box>
+        </Container>
+      </div>
     )
   }
 }
