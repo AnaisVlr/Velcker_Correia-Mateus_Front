@@ -8,9 +8,9 @@ import JeuItem from "./JeuItem";
 import '../../styles/App.css';
 import '../../styles/Jeu.css';
 
-import { Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Table, TableBody, TableContainer } from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select';
-import { Checkbox, List, ListItem, TextField, Stack, MenuItem, Select, Container, Button } from "@mui/material";
+import { TextField, MenuItem, Select } from "@mui/material";
 
 
 export default function JeuxList(props: { isAdmin: boolean; }) {
@@ -38,10 +38,14 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
         setIsLoaded(true);
 
         let listJeux : Jeu[] = res.data
+        
         listJeux.forEach(jeu => {
           axios.get<Zone[]>("http://localhost:3333/zone/"+jeu.id_jeu+"/jeu")
           .then(res => {
-            jeu.zones = res.data
+            jeu.zones = []
+            res.data.forEach((ele: any) => {
+              jeu.zones.push(ele.zone)
+            })
           });
         })
         setJeux(listJeux)
@@ -77,7 +81,7 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
       liste = liste.filter((item) => item.nom_jeu.toLowerCase().includes(selectedName.toLowerCase()))
 
     setFilteredJeux(liste)
-  }, [selectedZone, selectedType, selectedName])
+  }, [selectedZone, selectedType, selectedName, jeux])
 
   if (error) {
     return <div>Erreur : {error.message}</div>;
@@ -154,7 +158,7 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
           <Table>
             <TableBody>
               {filteredJeux.map((jeu) => (
-                <JeuItem key={"jeuitem-"+jeu.id_jeu} isAdmin={props.isAdmin} jeu={jeu} onClickDelete={handleDeleteJeu}></JeuItem>
+                <JeuItem key={"jeuitem-"+jeu.id_jeu} isAdmin={props.isAdmin} jeu={jeu} listZone={zones} onClickDelete={handleDeleteJeu}></JeuItem>
               ))}
             </TableBody>
           </Table>

@@ -1,22 +1,24 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TableCell, TableRow, MenuItem, Select, TextField, SelectChangeEvent, Alert, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Typography, Stack, DialogActions, Button, TableCell, TableRow, MenuItem, Select, TextField, SelectChangeEvent, Alert, Box } from '@mui/material';
 import axios, { AxiosError } from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import Jeu from '../../models/Jeu';
+import Zone from "../../models/Zone";
 import { Type } from '../../models/Type';
 import '../../styles/App.css';
 import '../../styles/Jeu.css';
 
-export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDelete: (id: number) => void}){
+export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Zone[], onClickDelete: (id: number) => void}){
     const jeu = props.jeu;
+    if(jeu.zones === undefined)
+        jeu.zones = []
 
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
-
     const [openModify, setOpenModify] = useState(false);
 
     const [error, setError] = useState<AxiosError | null>(null);
@@ -24,7 +26,9 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
 
     const [nom, setNom] = useState<string>(jeu.nom_jeu);
     const [type, setType] = useState<Type>(jeu.type_jeu);
+    const [zones, setZones] = useState<Zone[]>(props.listZone);
 
+    const [selectedZone, setSelectedZone] = useState<number>(-1);
     const [selectedType, setSelectedType] = useState<string>(jeu.type_jeu.toString());
     const [newName, setNewName] = useState<string>(nom);
 
@@ -76,19 +80,6 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
         }
     }
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        setOpenModify(false);
-    };
-
-    const handleModify = () => {
-        setOpenModify(true);
-    }
-
     const handleDelete = () => {
         axios.delete("http://localhost:3333/jeu/"+jeu.id_jeu)
         .then(() => {
@@ -97,6 +88,58 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
         })
         
     }
+    const handleAffectation = () => {
+        if(selectedZone !== -1) {
+            const data = {
+                id_jeu: jeu.id_jeu,
+                id_zone: selectedZone
+            };
+            axios.post("http://localhost:3333/zone/jeu", data)
+            .then(res => {
+                let z : Zone | undefined = zones.find(z => z.id_zone === selectedZone);
+                if(z !== undefined){
+                    jeu.zones.push(z);
+                    setZones(zones.filter(zone => zone.id_zone !== selectedZone))
+                }
+                setSelectedZone(-1);
+                setSuccess("Affectation réussie");
+            })
+            .catch((error : AxiosError) => {
+                setError(error);
+            })
+        }
+    }
+    const handleRemoveAffectation = (id_zone: number) => {
+        axios.delete("http://localhost:3333/zone/"+id_zone+"/"+jeu.id_jeu)
+        .then(res => {
+            let z : Zone | undefined = jeu.zones.find(z => z.id_zone === id_zone);
+            if(z !== undefined){
+                jeu.zones = jeu.zones.filter(zone => zone.id_zone !== id_zone)
+                let listZone : Zone[] = zones;
+                listZone.push(z)
+                setZones(listZone)
+            }
+            setSuccess("Suppression réussie");
+        })
+        .catch((error : AxiosError) => {
+            setError(error);
+        })
+    }
+
+    useEffect(() => {
+        //Retirer de la liste des zones, les zones où le jeu est déjà affecté
+        let listIdZone : Number[] = []
+        jeu.zones.forEach((z : Zone) => {
+            listIdZone.push(z.id_zone)
+        });
+        
+
+        let listZone : Zone[] = []
+        listZone.push(new Zone(-1, "Aucune sélectionnée", [], []))
+        listZone = props.listZone.filter((z : Zone) =>  !listIdZone.includes(z.id_zone) && z.id_zone !== -1)
+        setZones(listZone);
+        
+    }, [jeu.zones])
 
     return (
         <>
@@ -107,12 +150,12 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                 {nom}
                 </TableCell>
                 <TableCell align="right">
-                    <Button onClick={handleClickOpen} className="boutonJeu">
+                    <Button onClick={() => { setOpen(true); }} className="boutonJeu">
                         <VisibilityIcon/>
                     </Button>
                     <Dialog
                         open={open}
-                        onClose={handleClose}
+                        onClose={() => { setOpen(false); setOpenModify(false); }}
                     >
                         {error &&
                             <Alert onClose={() => {setError(null)}} severity="error">
@@ -130,14 +173,56 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                     {nom}
                                 </DialogTitle>
                                 <DialogContent>
-                                    <DialogContentText>
-                                        Type du jeu : {type}
-                                    </DialogContentText>
+                                    <Stack direction="row">
+                                        <Stack direction="column" spacing={2}>
+                                            <Typography>Type du jeu : {type}</Typography>
+                                            {jeu.zones.length === 0 && 
+                                                <Typography>Pas d'affectation</Typography>
+                                            }
+                                            {jeu.zones.length > 0 &&
+                                                <>
+                                                    <Typography>Affectation :</Typography>
+                                                    {jeu.zones.map((zone:Zone) => (
+                                                        <Stack key={"jeu-zone-"+jeu.id_jeu+zone.id_zone} direction="row">
+                                                            <Typography >{zone.nom_zone}</Typography>
+                                                            {props.isAdmin &&
+                                                                <Button onClick={() => handleRemoveAffectation(zone.id_zone)} className="boutonJeu">
+                                                                    <DeleteIcon/>
+                                                                </Button>
+                                                            }
+                                                        </Stack>
+                                                    ))}
+                                                </>
+                                            }
+                                        </Stack>
+                                        {props.isAdmin && 
+                                            <Stack direction="column">
+                                                <p>Zone : </p>
+                                                <Select
+                                                    value={String(selectedZone)}
+                                                    onChange={(event: SelectChangeEvent) => { setSelectedZone(Number(event.target.value)); }}
+                                                    >
+                                                    {zones.map((i:any) => (
+                                                        <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                                <Button
+                                                    className="boutonJeu"
+                                                    type="submit"
+                                                    fullWidth
+                                                    variant="contained"
+                                                    onClick={handleAffectation}
+                                                >
+                                                    Affecter
+                                                </Button>
+                                            </Stack>
+                                        }
+                                    </Stack>
                                 </DialogContent>
                                 <DialogActions>
                                     {props.isAdmin &&
                                         <>
-                                            <Button onClick={handleModify} className="boutonJeu">
+                                            <Button onClick={() => { setOpenModify(true); }} className="boutonJeu">
                                                 <EditIcon/>
                                             </Button>
                                             <Button onClick={handleDelete} className="boutonJeu">
@@ -145,7 +230,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                             </Button>
                                         </>
                                     }
-                                    <Button onClick={handleClose} className='boutonJeu'>Fermer</Button>
+                                    <Button onClick={() => { setOpen(false); setOpenModify(false); }} className='boutonJeu'>Fermer</Button>
                                 </DialogActions>
                             </>
                         }
@@ -187,7 +272,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                     </Box>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={handleClose} className="boutonJeu">Fermer</Button>
+                                    <Button onClick={() => { setOpen(false); setOpenModify(false); }} className="boutonJeu">Fermer</Button>
                                     <Button onClick={handleDelete} className="boutonJeu">
                                         <DeleteIcon/>
                                     </Button>
