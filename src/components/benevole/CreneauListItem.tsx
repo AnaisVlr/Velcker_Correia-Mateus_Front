@@ -24,6 +24,7 @@ interface typeProps {
 
 export default function CreneauListItem(props: typeProps) {
   const c : Creneau = props.creneau
+  dayjs.locale('fr');
 
   const [errorUpdate, setErrorUpdate] = useState<AxiosError | null>(null);
   const [errorDelete, setErrorDelete] = useState<AxiosError | null>(null);
@@ -100,52 +101,56 @@ export default function CreneauListItem(props: typeProps) {
           {success}
         </Alert>
       }
-      <Stack direction="column">
+      <Stack direction="column" sx={{m:1}}>
         <Typography>Zone affectée : {c.zone.nom_zone}</Typography>
-        <Typography> De {dayjs(new Date(c.debut)).format('LLLL')}</Typography>
-        <Typography> À {dayjs(new Date(c.fin)).format('LLLL')}</Typography>
+        <Typography sx={{paddingLeft:2}}> Du : {dayjs(new Date(c.debut)).format('LT') +" le "+ dayjs(new Date(c.debut)).format('LL')}</Typography>
+        <Typography sx={{paddingLeft:2}}> Au :   {dayjs(new Date(c.fin)).format('LT') +" le "+ dayjs(new Date(c.fin)).format('LL')}</Typography>
       </Stack>
 
       {props.isConnectedUserAdmin &&
       <>
-        <Button sx={{textTransform: 'none'}} variant="outlined" onClick={() => { setOpenUpdate(true) }}>
-          <EditIcon />
-        </Button>
-        <Button sx={{textTransform: 'none'}} variant="outlined" onClick={() => { setOpenDelete(true) }}>
-          <DeleteIcon />
-        </Button>
-        <Modal
-          open={openUpdate}
-          onClose={() => { setOpenUpdate(false) }}
-        >
-          <Container>
-            {errorUpdate &&
-              <Alert onClose={() => {setErrorUpdate(null)}} severity="error">
-                {errorUpdate.message}
-              </Alert>
-            }
-            <Box sx={style}>
-                Modification des dates
-              <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
-                <Stack direction="column" component="form" noValidate spacing={3}>
-                  <DateTimePicker
-                    label="Début"
-                    value={debut}
-                    onChange={(newValue: Dayjs | null) => { setDebut(newValue); }}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                  <DateTimePicker
-                    label="Fin"
-                    value={fin}
-                    onChange={(newValue: Dayjs | null) => { setFin(newValue); }}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </Stack>
-              </LocalizationProvider>
-              <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onConfirmUpdate()}>Confirmer</Button>
-            </Box>
-          </Container>
-        </Modal>
+        <Stack direction="row" spacing={1}>
+          <Button sx={{textTransform: 'none'}} variant="outlined" onClick={() => { setOpenUpdate(true) }}>
+            <EditIcon />
+          </Button>
+          <Button sx={{textTransform: 'none'}} variant="outlined" onClick={() => { setOpenDelete(true) }}>
+            <DeleteIcon />
+          </Button>
+        </Stack>
+        <>
+          <Modal
+            open={openUpdate}
+            onClose={() => { setOpenUpdate(false) }}
+          >
+            <Container>
+              {errorUpdate &&
+                <Alert onClose={() => {setErrorUpdate(null)}} severity="error">
+                  {errorUpdate.message}
+                </Alert>
+              }
+              <Box sx={style}>
+                  Modification des dates
+                <LocalizationProvider adapterLocale={'fr'} dateAdapter={AdapterDayjs}>
+                  <Stack direction="column" component="form" noValidate spacing={3} sx={{m:2}}>
+                    <DateTimePicker
+                      label="Début"
+                      value={debut}
+                      onChange={(newValue: Dayjs | null) => { setDebut(newValue); }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                    <DateTimePicker
+                      label="Fin"
+                      value={fin}
+                      onChange={(newValue: Dayjs | null) => { setFin(newValue); }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Stack>
+                </LocalizationProvider>
+                <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onConfirmUpdate()}>Confirmer</Button>
+              </Box>
+            </Container>
+          </Modal>
+        </>
         <Modal
           open={openDelete}
           onClose={() => { setOpenDelete(false) }}

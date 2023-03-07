@@ -112,10 +112,10 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
     return (
       <>
         {props.isAdmin &&
-        <>
-          <Link to="addBenevole/"><Button className='bouton'>Créer des comptes bénévoles</Button></Link>
-          <Link to="addCreneau/"><Button className='bouton'>Affecter des bénévoles à des zones</Button></Link>
-        </>
+        <Stack direction="row" spacing={2} sx={{m:2}}>
+          <Link to="addBenevole/"><Button variant="contained" sx={{textTransform:'none'}}>Créer des comptes bénévoles</Button></Link>
+          <Link to="addCreneau/"><Button variant="contained" sx={{textTransform:'none'}}>Affecter des bénévoles à des zones</Button></Link>
+        </Stack>
         }
         <Container>
           <Stack direction="row" spacing={3}>
