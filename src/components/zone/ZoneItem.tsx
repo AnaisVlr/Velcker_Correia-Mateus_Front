@@ -80,7 +80,7 @@ export default function ZoneItem(props: { isAdmin: boolean, zone: Zone, listJeux
 
   return (
     <Paper variant="outlined" sx={{ width: 200, height: 200}}>
-      <Button onClick={() => { setOpen(true); }} className="boutonJeu">
+      <Button onClick={() => { setOpen(true); }}>
         <VisibilityIcon/>
       </Button>
       <div className="zoneName">
@@ -138,11 +138,11 @@ export default function ZoneItem(props: { isAdmin: boolean, zone: Zone, listJeux
                   ))}
                 </Select>
                 <Button
-                  className="boutonJeu"
                   type="submit"
                   fullWidth
                   variant="contained"
                   onClick={handleAffectation}
+                  sx={{textTransform: 'none'}}
                 >
                   Affecter
                 </Button>
