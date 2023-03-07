@@ -10,7 +10,7 @@ import '../../styles/Jeu.css';
 
 import { Button, Table, TableBody, TableContainer } from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select';
-import { TextField, MenuItem, Select } from "@mui/material";
+import { TextField, MenuItem, Select, Stack, Box } from "@mui/material";
 
 
 export default function JeuxList(props: { isAdmin: boolean; }) {
@@ -94,41 +94,44 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
 
         <div>
           {props.isAdmin &&
-          <>
+          <Box sx={{m:1}}>
             <Link to="/jeux/add">
               <Button variant="contained" sx={{textTransform:'none'}}>
                 Ajouter un nouveau jeu
               </Button>
             </Link>
-          </>
+          </Box>
           }
         </div>
-        <TextField
-          label="Nom"
-          color="primary"
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setSelectedName(event.target.value);}}
-        />
-        <p>Zone : </p>
-        <Select
-          value={String(selectedZone)}
-          onChange={(event: SelectChangeEvent) => { setSelectedZone(Number(event.target.value)); }}
+        <Stack direction="row" spacing={5} sx={{alignItems:"center"}}>
+          <TextField
+            label="Recherche par nom..."
+            color="primary"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setSelectedName(event.target.value);}}
+          />
+          <p>Par zone : </p>
+          <Select
+            value={String(selectedZone)}
+            onChange={(event: SelectChangeEvent) => { setSelectedZone(Number(event.target.value)); }}
+            >
+            {zones.map((i) => (
+              <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
+              ))}
+          </Select>
+          <p>Par type : </p>
+          <Select
+            value={selectedType}
+            onChange={(event: SelectChangeEvent) => { setSelectedType(event.target.value) }}
           >
-          {zones.map((i) => (
-            <MenuItem key={i.id_zone+"-"+i.nom_zone} value={i.id_zone}>{i.nom_zone}</MenuItem>
-            ))}
-        </Select>
-        <p>Type : </p>
-        <Select
-          value={selectedType}
-          onChange={(event: SelectChangeEvent) => { setSelectedType(event.target.value) }}
-        >
-          <MenuItem value="TOUS">Tous</MenuItem>
-          <MenuItem value="AMBIANCE">Ambiance</MenuItem>
-          <MenuItem value="ENFANT">Enfant</MenuItem>
-          <MenuItem value="EXPERT">Expert</MenuItem>
-          <MenuItem value="FAMILLE">Famille</MenuItem>
-          <MenuItem value="INITIE">Inité</MenuItem>
-        </Select>
+            <MenuItem value="TOUS">Tous</MenuItem>
+            <MenuItem value="AMBIANCE">Ambiance</MenuItem>
+            <MenuItem value="ENFANT">Enfant</MenuItem>
+            <MenuItem value="EXPERT">Expert</MenuItem>
+            <MenuItem value="FAMILLE">Famille</MenuItem>
+            <MenuItem value="INITIE">Inité</MenuItem>
+          </Select>
+        </Stack>
+
         <TableContainer>
           <Table>
             <TableBody>

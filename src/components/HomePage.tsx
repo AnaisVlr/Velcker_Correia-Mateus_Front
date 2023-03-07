@@ -84,13 +84,14 @@ export default function HomePage() {
               direction="row"
               divider={<Divider orientation="vertical" flexItem />}
               spacing={2}
-            >
-              <Link to={"/profil/"+email }>
-                  Mon profil
-              </Link>
-              <button onClick={handleDisconnect}>
-                Se déconnecter
-              </button>
+              sx={{alignItems:'center'}}
+              >
+                <Link to={"/profil/"+email }>
+                    Mon profil
+                </Link>
+                <Button variant="contained" sx={{textTransform:'none'}} onClick={handleDisconnect}>
+                  Se déconnecter
+                </Button>
             </Stack>
           </div>
         </Box>
