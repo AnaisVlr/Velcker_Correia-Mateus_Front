@@ -6,7 +6,7 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 
-import {TextField, Box, Button, Alert, Container} from '@mui/material';
+import {TextField, Box, Button, Alert, Container, Stack} from '@mui/material';
 
 export default function AddBenevole() {
   const [error, setError] = useState<AxiosError | null>(null);
@@ -46,8 +46,11 @@ export default function AddBenevole() {
 
   return (
     <>
-      <Link to="/benevoles"><Button sx={{textTransform: 'none'}} variant="outlined">Retour</Button></Link>
-      <Link to="/benevoles/addCreneau"><Button sx={{textTransform: 'none'}} variant="outlined">Affecter des bénévoles à des zones</Button></Link>
+      <Stack direction="row" spacing={2}>
+
+        <Link to="/benevoles"><Button sx={{textTransform: 'none'}} variant="outlined">Retour</Button></Link>
+        <Link to="/benevoles/addCreneau"><Button sx={{textTransform: 'none'}} variant="outlined">Affecter des bénévoles à des zones</Button></Link>
+      </Stack>
 
       <Container component="main" maxWidth="xs">
         {error &&

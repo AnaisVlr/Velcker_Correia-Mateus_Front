@@ -91,9 +91,10 @@ export default function AddCreneau() {
   } else {
     return (
       <>
-        <Link to="/benevoles"><Button sx={{textTransform: 'none'}} variant="outlined">Retour</Button></Link>
-        <Link to="/benevoles/addBenevole"><Button sx={{textTransform: 'none'}} variant="outlined">Créer des comptes de bénévoles</Button></Link>
-        
+        <Stack direction="row" spacing={2}>
+          <Link to="/benevoles"><Button sx={{textTransform: 'none'}} variant="outlined">Retour</Button></Link>
+          <Link to="/benevoles/addBenevole"><Button sx={{textTransform: 'none'}} variant="outlined">Créer des comptes de bénévoles</Button></Link>
+        </Stack>
         <Container component="main" maxWidth="xs">
           {error &&
             <Alert onClose={() => {setError(null)}} severity="error">
