@@ -98,25 +98,64 @@ export default function HomePage() {
         <h1>
           Festival de jeux de Montpellier 2023
         </h1>
-        <Stack
-          direction="row"
-          divider={<Divider orientation="vertical" flexItem />}
-          justifyContent="space-around"
-          alignItems="center" 
-          spacing={3}
-        >
-          <div id="divJeux">
-            <Link to="/jeux">
-              Jeux
-            </Link>
+        <div className="row">
+          <div className="col-1-of-3">
+            <div className="card">
+              <div className="card__side card__side--front-1">
+                <div className="card__title card__title--1">
+                  <h4 className="card__heading">Jeux</h4>
+                </div>
+              </div>
+              <div className="card__side card__side--back card__side--back-1">
+                <Link to="/jeux">
+                  <div className="card__cta">
+                    <div className="card__title card__title--1">
+                      <h4 className="card__heading">Jeux</h4>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
           </div>
-          <div id="divZones">
-            <Link to="/zones">Zones</Link>
+
+          <div className="col-1-of-3">
+            <div className="card">
+              <div className="card__side card__side--front-2">
+                <div className="card__title card__title--2">
+                  <h4 className="card__heading">Zones</h4>
+                </div>
+              </div>
+              <div className="card__side card__side--back card__side--back-2">
+                <Link to="/zones">
+                  <div className="card__cta">
+                    <div className="card__title card__title--2">
+                      <h4 className="card__heading">Zones</h4>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
           </div>
-          <div id="divBenevoles">
-          <Link to="/benevoles">Bénévoles</Link>
+
+          <div className="col-1-of-3">
+            <div className="card">
+              <div className="card__side card__side--front-3">
+                <div className="card__title card__title--3">
+                  <h4 className="card__heading">Bénévoles</h4>
+                </div>
+              </div>
+              <div className="card__side card__side--back card__side--back-3">
+                <Link to="/benevoles">
+                  <div className="card__cta">
+                    <div className="card__title card__title--3">
+                      <h4 className="card__heading">Bénévoles</h4>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
           </div>
-        </Stack>
+        </div>
       </div>
     )
   }else{
