@@ -130,51 +130,62 @@ export default function HomePage() {
               paddingTop: 8,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: 'center'
             }}
             >
-            <Avatar sx={{ m: 1, bgcolor: 'warning.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Connexion
-            </Typography>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              color='primary'
-              id="emailIn-textfield"
-              name="email"
-              label="Email"
-              autoComplete="email"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              color='primary'
-              id="passwordIn-textfield"
-              label="Mot de passe"
-              autoComplete="current-password"
-              type='password'
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
-            />
-            <Button
-              className='bouton'
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, textTransform: 'none' }}
-            >
-              Se connecter
-            </Button>
-            {error &&
-            <Alert onClose={() => {setError(null)}} severity="error">
-              {error.message}
-            </Alert>
-          }
+              <div className="connexion">
+                <Stack
+                  direction="column"
+                  justifyContent="space-around"
+                  alignItems="center" 
+                  spacing={3}
+                >
+                  <Avatar sx={{ m: 1, bgcolor: 'warning.main' }}>
+                    <LockOutlinedIcon />
+                  </Avatar>
+                  <Typography component="h1" variant="h5" >
+                    Connexion
+                  </Typography>
+                </Stack>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  sx={{backgroundColor: '#F2F2F2'}}
+                  color='primary'
+                  id="emailIn-textfield"
+                  name="email"
+                  label="Email"
+                  autoComplete="email"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  sx={{backgroundColor: '#F2F2F2'}}
+                  color='primary'
+                  id="passwordIn-textfield"
+                  label="Mot de passe"
+                  autoComplete="current-password"
+                  type='password'
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
+                />
+                <Button
+                  className='bouton'
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2, textTransform: 'none' }}
+                >
+                  Se connecter
+                </Button>
+                {error &&
+                <Alert onClose={() => {setError(null)}} severity="error">
+                  {error.message}
+                </Alert>
+              }
+              </div>
           </Box>
         </Container>
       </div>
