@@ -173,15 +173,15 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Z
                                     {nom}
                                 </DialogTitle>
                                 <DialogContent>
-                                    <Stack direction="row">
+                                    <Typography>Type du jeu : {type}</Typography>
+                                    <Stack direction="row" spacing={10} sx={{alignItems:'center'}}>
                                         <Stack direction="column" spacing={2}>
-                                            <Typography>Type du jeu : {type}</Typography>
                                             {jeu.zones.length === 0 && 
                                                 <Typography>Pas d'affectation</Typography>
                                             }
                                             {jeu.zones.length > 0 &&
                                                 <>
-                                                    <Typography>Affectation :</Typography>
+                                                    <Typography>Zone affectées :</Typography>
                                                     {jeu.zones.map((zone:Zone) => (
                                                         <Stack key={"jeu-zone-"+jeu.id_jeu+zone.id_zone} direction="row">
                                                             <Typography >{zone.nom_zone}</Typography>
@@ -197,7 +197,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Z
                                         </Stack>
                                         {props.isAdmin && 
                                             <Stack direction="column">
-                                                <p>Zone : </p>
+                                                <p>Affecter à une autre zone : </p>
                                                 <Select
                                                     color='primary'
                                                     value={String(selectedZone)}

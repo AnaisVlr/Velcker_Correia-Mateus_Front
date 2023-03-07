@@ -82,13 +82,14 @@ export default function NavigationBar(props: { page: String; }) {
                 direction="row"
                 divider={<Divider orientation="vertical" flexItem />}
                 spacing={2}
+                sx={{alignItems:'center'}}
               >
                 <Link to={"/profil/"+email }>
                     Mon profil
                 </Link>
-                <button onClick={handleDisconnect}>
+                <Button variant="contained" sx={{textTransform:'none'}} onClick={handleDisconnect}>
                   Se déconnecter
-                </button>
+                </Button>
               </Stack>
             </div>
           </Box>

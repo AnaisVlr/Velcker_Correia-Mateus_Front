@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Paper, Dialog, DialogTitle, DialogContent, Typography, Stack, DialogActions, Button, MenuItem, Select, SelectChangeEvent, Alert } from '@mui/material';
+import { Paper, Box, Dialog, DialogTitle, DialogContent, Typography, Stack, DialogActions, Button, MenuItem, Select, SelectChangeEvent, Alert } from '@mui/material';
 import axios, { AxiosError } from 'axios';
 
 import { Type } from '../../models/Type';
@@ -80,12 +80,11 @@ export default function ZoneItem(props: { isAdmin: boolean, zone: Zone, listJeux
 
   return (
     <Paper variant="outlined" sx={{ width: 200, height: 200}}>
-      <Button onClick={() => { setOpen(true); }}>
-        <VisibilityIcon/>
+      <Button onClick={() => { setOpen(true); }} sx={{textTransform:'none', height:'100%', width:'100%'}}>
+        <Box className="zoneName" >
+          {zone.nom_zone}
+        </Box>
       </Button>
-      <div className="zoneName">
-        {zone.nom_zone}
-      </div>
       <Dialog
         open={open}
         onClose={() => { setOpen(false); }}
@@ -100,61 +99,61 @@ export default function ZoneItem(props: { isAdmin: boolean, zone: Zone, listJeux
             {success}
           </Alert>
         }
-          <>
-            <DialogTitle>
-                {zone.nom_zone}
-            </DialogTitle>
-            <DialogContent>
-                <Stack direction="row">
-              <Stack direction="column" spacing={2}>
-                {zone.jeux.length === 0 && 
+        <>
+          <DialogTitle>
+              {zone.nom_zone}
+          </DialogTitle>
+          <DialogContent>
+              <Stack direction="row" spacing={10}>
+                <Stack direction="column" spacing={2}>
+                  {zone.jeux.length === 0 && 
                     <Typography>Pas d'affectation</Typography>
-                }
-                {zone.jeux.length > 0 &&
-                  <>
-                      <Typography>Affectation :</Typography>
-                    {zone.jeux.map((jeu:Jeu) => (
-                      <Stack key={"zone-jeu"+jeu.id_jeu+zone.id_zone} direction="row">
-                        <Typography >{jeu.nom_jeu}</Typography>
-                        {props.isAdmin &&
-                          <Button onClick={() => handleRemoveAffectation(jeu.id_jeu)} className="boutonJeu">
-                            <DeleteIcon/>
-                          </Button>
-                        }
-                      </Stack>
+                  }
+                  {zone.jeux.length > 0 &&
+                    <>
+                      <Typography>Jeux affectés :</Typography>
+                      {zone.jeux.map((jeu:Jeu) => (
+                        <Stack key={"zone-jeu"+jeu.id_jeu+zone.id_zone} direction="row">
+                          <Typography >{jeu.nom_jeu}</Typography>
+                          {props.isAdmin &&
+                            <Button onClick={() => handleRemoveAffectation(jeu.id_jeu)}>
+                              <DeleteIcon/>
+                            </Button>
+                          }
+                        </Stack>
+                      ))}
+                    </>
+                  }
+                </Stack>
+              {props.isAdmin && 
+                <Stack direction="column">
+                  <p>Affecter un autre jeu : </p>
+                  <Select
+                    value={String(selectedJeu)}
+                    onChange={(event: SelectChangeEvent) => { setSelectedJeu(Number(event.target.value)); }}
+                  >
+                    {jeux.map((i:Jeu) => (
+                      <MenuItem key={i.id_jeu+"-"+i.nom_jeu} value={i.id_jeu}>{i.nom_jeu}</MenuItem>
                     ))}
-                  </>
-                }
-              </Stack>
-            {props.isAdmin && 
-              <Stack direction="column">
-                <p>Zone : </p>
-                <Select
-                  value={String(selectedJeu)}
-                  onChange={(event: SelectChangeEvent) => { setSelectedJeu(Number(event.target.value)); }}
-                >
-                  {jeux.map((i:Jeu) => (
-                    <MenuItem key={i.id_jeu+"-"+i.nom_jeu} value={i.id_jeu}>{i.nom_jeu}</MenuItem>
-                  ))}
-                </Select>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  onClick={handleAffectation}
-                  sx={{textTransform: 'none'}}
-                >
-                  Affecter
-                </Button>
-              </Stack>
-            }
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => { setOpen(false); }} className='boutonJeu'>Fermer</Button>
-        </DialogActions>
-      </>
-    </Dialog>
-</Paper>
+                  </Select>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    onClick={handleAffectation}
+                    sx={{textTransform: 'none'}}
+                  >
+                    Affecter
+                  </Button>
+                </Stack>
+              }
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => { setOpen(false); }} className='boutonJeu'>Fermer</Button>
+          </DialogActions>
+        </>
+      </Dialog>
+    </Paper>
   )
 }
