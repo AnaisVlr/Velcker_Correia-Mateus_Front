@@ -24,6 +24,7 @@ interface typeProps {
 
 export default function CreneauListItem(props: typeProps) {
   const c : Creneau = props.creneau
+  dayjs.locale('fr');
 
   const [errorUpdate, setErrorUpdate] = useState<AxiosError | null>(null);
   const [errorDelete, setErrorDelete] = useState<AxiosError | null>(null);
@@ -102,8 +103,8 @@ export default function CreneauListItem(props: typeProps) {
       }
       <Stack direction="column" sx={{m:1}}>
         <Typography>Zone affectée : {c.zone.nom_zone}</Typography>
-        <Typography> De {dayjs(new Date(c.debut)).format('LLLL')}</Typography>
-        <Typography> À {dayjs(new Date(c.fin)).format('LLLL')}</Typography>
+        <Typography sx={{paddingLeft:2}}> Du : {dayjs(new Date(c.debut)).format('LT') +" le "+ dayjs(new Date(c.debut)).format('LL')}</Typography>
+        <Typography sx={{paddingLeft:2}}> Au :   {dayjs(new Date(c.fin)).format('LT') +" le "+ dayjs(new Date(c.fin)).format('LL')}</Typography>
       </Stack>
 
       {props.isConnectedUserAdmin &&
