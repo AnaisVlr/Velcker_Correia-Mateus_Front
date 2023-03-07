@@ -91,8 +91,8 @@ export default function AddCreneau() {
   } else {
     return (
       <>
-        <Link to="/benevoles"><Button className='bouton'>Voir la liste des bénévoles</Button></Link>
-        <Link to="/benevoles/addBenevole"><Button className='bouton'>Créer des comptes de bénévoles</Button></Link>
+        <Link to="/benevoles"><Button sx={{textTransform: 'none'}} variant="outlined">Retour</Button></Link>
+        <Link to="/benevoles/addBenevole"><Button sx={{textTransform: 'none'}} variant="outlined">Créer des comptes de bénévoles</Button></Link>
         
         <Container component="main" maxWidth="xs">
           {error &&
@@ -168,11 +168,10 @@ export default function AddCreneau() {
                 </Stack>
               </LocalizationProvider>
               <Button
-                className='bouton'
+                variant="outlined"
                 type="submit"
                 fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, textTransform: 'none' }}
               >
                 Ajouter le créneau
               </Button>

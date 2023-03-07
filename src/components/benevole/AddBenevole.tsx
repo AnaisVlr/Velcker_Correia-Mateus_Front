@@ -46,8 +46,8 @@ export default function AddBenevole() {
 
   return (
     <>
-      <Link to="/benevoles"><Button className='bouton'>Voir la liste des bénévoles</Button></Link>
-      <Link to="/benevoles/addCreneau"><Button className='bouton'>Affecter des bénévoles à des zones</Button></Link>
+      <Link to="/benevoles"><Button sx={{textTransform: 'none'}} variant="outlined">Retour</Button></Link>
+      <Link to="/benevoles/addCreneau"><Button sx={{textTransform: 'none'}} variant="outlined">Affecter des bénévoles à des zones</Button></Link>
 
       <Container component="main" maxWidth="xs">
         {error &&
@@ -104,10 +104,10 @@ export default function AddBenevole() {
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
           />
           <Button
-            className='bouton'
+            variant="outlined"
             type="submit"
             fullWidth
-            variant="contained"
+            sx={{ textTransform: 'none'}}
           >
             Créer le compte
           </Button>

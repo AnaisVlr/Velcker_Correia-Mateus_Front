@@ -1,4 +1,3 @@
-import '../styles/Home.css';
 import '../styles/App.css';
 import React from 'react'
 import { useEffect, useState } from "react";
@@ -132,7 +131,7 @@ export default function HomePage() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'warning.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -141,6 +140,7 @@ export default function HomePage() {
           <TextField
             margin="normal"
             required
+            color='primary'
             fullWidth
             id="emailIn-textfield"
             name="email"
@@ -150,6 +150,7 @@ export default function HomePage() {
           />
           <TextField
             margin="normal"
+            color='primary'
             required
             fullWidth
             id="passwordIn-textfield"
@@ -159,11 +160,10 @@ export default function HomePage() {
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
           />
           <Button
-            className='bouton'
             type="submit"
             fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            variant="outlined"
+            sx={{ mt: 3, mb: 2, textTransform: 'none'}}
           >
             Se connecter
           </Button>

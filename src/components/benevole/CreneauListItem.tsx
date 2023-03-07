@@ -120,10 +120,10 @@ export default function CreneauListItem(props: typeProps) {
 
       {props.isConnectedUserAdmin &&
       <>
-        <Button className='bouton' variant="outlined" onClick={() => onClickUpdate()}>
+        <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onClickUpdate()}>
           <EditIcon />
         </Button>
-        <Button className='bouton' variant="outlined" onClick={() => onClickDelete()}>
+        <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onClickDelete()}>
           <DeleteIcon />
         </Button>
         <Modal
@@ -154,7 +154,7 @@ export default function CreneauListItem(props: typeProps) {
                   />
                 </Stack>
               </LocalizationProvider>
-              <Button className='bouton' onClick={() => onConfirmUpdate()}>Confirmer</Button>
+              <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onConfirmUpdate()}>Confirmer</Button>
             </Box>
           </Container>
         </Modal>
@@ -170,8 +170,8 @@ export default function CreneauListItem(props: typeProps) {
             }
             <Box sx={style}>
               <Typography>Voulez-vous vraiment supprimer ce créneau ?</Typography>
-              <Button className='bouton' onClick={() => onConfirmDelete()}>Confirmer</Button>
-              <Button className='bouton' onClick={() => setOpenDelete(false)}>Annuler</Button>
+              <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onConfirmDelete()}>Confirmer</Button>
+              <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => setOpenDelete(false)}>Annuler</Button>
             </Box>
           </Container>
         </Modal>

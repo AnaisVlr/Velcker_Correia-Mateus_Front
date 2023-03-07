@@ -14,6 +14,7 @@ export default function NavigationBar(props: { page: String; }) {
 
   const navigate = useNavigate();
 
+
   //Vérifie que la session utilisateur est correcte
   const authentificationValid = () => {
     const token = localStorage.getItem('access_token');
@@ -114,6 +115,7 @@ export default function NavigationBar(props: { page: String; }) {
         <TextField
           id="passwordIn-textfield"
           required
+          sx={{color: 'primary.light'}}
           label="Mot de passe"
           type='password'
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}}
@@ -121,7 +123,8 @@ export default function NavigationBar(props: { page: String; }) {
         <Button
           type="submit"
           fullWidth
-          variant="contained"
+          variant="outlined"
+          sx={{textTransform: 'none'}}
         >
           Se connecter
         </Button>

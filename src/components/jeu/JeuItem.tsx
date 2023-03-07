@@ -9,6 +9,7 @@ import Jeu from '../../models/Jeu';
 import { Type } from '../../models/Type';
 import '../../styles/App.css';
 import '../../styles/Jeu.css';
+import ButtonBase from '@mui/material/ButtonBase';
 
 export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDelete: (id: number) => void, onClickModify: (id: number) => void}){
     const jeu = props.jeu;
@@ -106,7 +107,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                 {jeu.nom_jeu}
                 </TableCell>
                 <TableCell align="right">
-                    <Button onClick={handleClickOpen} className="boutonJeu">
+                    <Button onClick={handleClickOpen}>
                         <VisibilityIcon/>
                     </Button>
                     <Dialog
@@ -136,15 +137,15 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                 <DialogActions>
                                     {props.isAdmin &&
                                         <>
-                                            <Button onClick={handleModify} className="boutonJeu">
+                                            <Button onClick={handleModify}>
                                                 <EditIcon/>
                                             </Button>
-                                            <Button onClick={handleDelete} className="boutonJeu">
+                                            <Button onClick={handleDelete}>
                                                 <DeleteIcon/>
                                             </Button>
                                         </>
                                     }
-                                    <Button onClick={handleClose} className='boutonJeu'>Fermer</Button>
+                                    <Button onClick={handleClose}>Fermer</Button>
                                 </DialogActions>
                             </>
                         }
@@ -175,18 +176,18 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, onClickDele
                                             <MenuItem value="initie">Inité</MenuItem>
                                         </Select>
                                         <Button
-                                            className="boutonJeu"
                                             type="submit"
                                             fullWidth
                                             variant="contained"
+                                            sx={{textTransform: 'none'}}
                                         >
                                             Modifier le jeu
                                         </Button>
                                     </Box>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={handleClose} className="boutonJeu">Fermer</Button>
-                                    <Button onClick={handleDelete} className="boutonJeu">
+                                    <Button sx={{textTransform: 'none'}} onClick={handleClose}>Fermer</Button>
+                                    <Button onClick={handleDelete}>
                                         <DeleteIcon/>
                                     </Button>
                                 </DialogActions>

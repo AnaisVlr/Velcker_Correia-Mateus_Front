@@ -69,7 +69,7 @@ export default function BenevoleListItem(props: typeProps) {
             {b.nom_benevole +" "+ b.prenom_benevole}
           </Typography>
           {props.isConnectedUserAdmin &&
-            <Button className='bouton' variant="outlined" endIcon={<DeleteIcon />} onClick={() => onClickDelete()}>
+            <Button sx={{textTransform: 'none'}} variant="outlined" endIcon={<DeleteIcon />} onClick={() => onClickDelete()}>
               Supprimer
             </Button>
           }
@@ -98,8 +98,8 @@ export default function BenevoleListItem(props: typeProps) {
             }
             <Box sx={style}>
               <Typography>Voulez-vous vraiment supprimer le compte de {b.nom_benevole +" "+ b.prenom_benevole} ?</Typography>
-              <Button className='bouton' onClick={() => onConfirmDelete()}>Confirmer</Button>
-              <Button className='bouton' onClick={() => setOpenDelete(false)}>Annuler</Button>
+              <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => onConfirmDelete()}>Confirmer</Button>
+              <Button variant="outlined" sx={{textTransform: 'none'}} onClick={() => setOpenDelete(false)}>Annuler</Button>
             </Box>
           </Container>
         </Modal>

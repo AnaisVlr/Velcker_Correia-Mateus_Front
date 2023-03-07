@@ -1,4 +1,4 @@
-import { Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Button, Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import Jeu from "../../models/Jeu";
@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import JeuItem from "./JeuItem";
 import '../../styles/App.css';
 import '../../styles/Jeu.css';
+import ButtonBase from "@mui/material/ButtonBase/ButtonBase";
 
 
 export default function JeuxList(props: { isAdmin: boolean; }) {
@@ -51,8 +52,10 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
         <div>
           {props.isAdmin &&
           <>
-            <Link to="/jeux/add" className="boutonAjout">
-              Ajouter un nouveau jeu
+            <Link to="/jeux/add">
+              <Button variant="outlined" sx={{textTransform: 'none'}}>
+                Ajouter un nouveau jeu
+              </Button>
             </Link>
           </>
           }

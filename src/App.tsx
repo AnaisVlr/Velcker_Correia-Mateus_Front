@@ -14,6 +14,23 @@ const theme = createTheme({
       'serif'
     ].join(','),
   },
+  palette: {
+    primary: {
+      main: "#4F528C", //violet
+    },
+    secondary: {
+      main: '#F2B6CC', //Rose
+    },
+    error:{
+      main: '#F24C27', //Rouge
+    },
+    info:{
+      main: '#F2B6CC', //rose
+    },
+    warning:{
+      main: '#F29F05', //orange
+    }
+  },
 });
 
 function App() {

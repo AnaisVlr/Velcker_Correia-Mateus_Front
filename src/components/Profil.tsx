@@ -8,7 +8,6 @@ import { List, ListItem, ListItemText, TextField, Box, Button, Alert, Stack, Con
 import Benevole from "../models/Benevole";
 
 export default function Profil() {
-  
   const { user } = useParams()
 
   const [error, setError] = useState<AxiosError | null>(null);
@@ -68,7 +67,8 @@ export default function Profil() {
 
   return (
     <Container>
-      <Container maxWidth="xs">
+      <Container className="profil">
+        <h2>Mon profil</h2>
         <List
           sx={{
             width: '100%',
@@ -89,8 +89,8 @@ export default function Profil() {
       </Container>
 
 
-      <Container maxWidth="xs">
-        <h1>Changement de mot de passe</h1>
+      <Container>
+        <h3>Changer mon mot de passe :</h3>
         <Box
           component="form"
           onSubmit={handleSubmitPassword}
@@ -98,57 +98,63 @@ export default function Profil() {
           sx={{
             marginTop: 0,
             display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
           }}
           >
-          <Stack direction="column">
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="old-textfield"
-              label="Ancien mot de passe"
-              type='password'
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setOld_password(event.target.value);}}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="new-textfield"
-              label="Nouveau mot de passe"
-              type='password'
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNew_password(event.target.value);}}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="confirm-textfield"
-              label="Confirmation"
-              type='password'
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setConfirm_password(event.target.value);}}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Modifier le mot de passe
-            </Button>
+          <Stack direction="column" className="profilForm">
+            {error &&
+              <Alert onClose={() => {setError(null)}} severity="error">
+                {error.message}
+              </Alert>
+            }
+            {success &&
+              <Alert onClose={() => {setSuccess(null)}} severity="success">
+                {success}
+              </Alert>
+            }
+            <Stack direction="row">
+              <TextField
+                className="textfieldProfil"
+                required
+                margin="normal"
+                id="old-textfield"
+                label="Ancien mot de passe"
+                type='password'
+                sx = {{width: "30%"}}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setOld_password(event.target.value);}}
+              />
+            </Stack>
+            <Stack direction="row" spacing={2}>
+              <TextField
+                className="textfieldProfil"
+                required
+                id="new-textfield"
+                label="Nouveau mot de passe"
+                type='password'
+                sx = {{width: "30%"}}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setNew_password(event.target.value);}}
+              />
+              <TextField
+                className="textfieldProfil"
+                required
+                id="confirm-textfield"
+                label="Confirmer le nouveau mot de passe"
+                sx = {{width: "30%"}}
+                type='password'
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setConfirm_password(event.target.value);}}
+              />
+            </Stack>
+            <Stack>
+              <Button
+                variant="outlined"
+                type="submit"
+                sx={{ mt: 2, mb: 2, width: "18%", textTransform: "none" }}
+              >
+                Modifier mon mot de passe
+              </Button>
+            </Stack>
           </Stack>
-          {error &&
-            <Alert onClose={() => {setError(null)}} severity="error">
-              {error.message}
-            </Alert>
-          }
-          {success &&
-            <Alert onClose={() => {setSuccess(null)}} severity="success">
-              {success}
-            </Alert>
-          }
         </Box>
       </Container>
     </Container>

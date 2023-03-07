@@ -65,7 +65,11 @@ export default function AddJeu() {
 
   return (
     <>
-        <Link to="/jeux">Retour</Link>
+        <Link to="/jeux">
+            <Button variant="outlined" sx={{textTransform: 'none'}}>
+                Retour
+            </Button>
+        </Link>
 
         {error &&
             <Alert onClose={() => {setError(null)}} severity="error">
@@ -103,10 +107,10 @@ export default function AddJeu() {
                     <MenuItem value="initie">Inité</MenuItem>
                 </Select>
                 <Button
-                    className="boutonJeu"
+                    variant="outlined"
                     type="submit"
                     fullWidth
-                    variant="contained"
+                    sx={{textTransform: 'none'}}
                 >
                     Créer le jeu
                 </Button>

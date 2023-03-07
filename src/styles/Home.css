@@ -8,10 +8,12 @@ a{
     color: #000;
     text-decoration: none;
 }
+
 .MuiButton {
     background-color: white;
     color: black;
   }
+  
 button{
     margin: 0;
     padding: 0;
