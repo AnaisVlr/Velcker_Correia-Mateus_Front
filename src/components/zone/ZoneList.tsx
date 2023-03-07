@@ -1,23 +1,48 @@
-import {Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
+import {Box, Grid} from "@mui/material";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import LoadingPage from "../LoadingPage";
 import Zone from "../../models/Zone";
+import Jeu from "../../models/Jeu";
 import '../../styles/Home.css';
+import ZoneItem from "./ZoneItem";
 
 export default function ZoneList(props: { isAdmin: boolean; }) {
   const [error, setError] = useState<AxiosError | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [zones, setZones] = useState<Zone[]>([]);
+  const [jeux, setJeux] = useState<Jeu[]>([]);
   
   useEffect(() => {
     axios.get<Zone[]>("http://localhost:3333/zone")
       .then(res => { 
+        let listZones : Zone[] = res.data
+        
+        listZones.forEach(zone => {
+          axios.get<Jeu[]>("http://localhost:3333/jeu/zone/"+zone.id_zone)
+          .then(res => {
+            zone.jeux = []
+            
+            res.data.forEach((ele: any) => {
+              zone.jeux.push(ele)
+            });
+          });
+        })
+
+        setZones(listZones)
         setIsLoaded(true);
-        setZones(res.data);
       })
       .catch((error : AxiosError) => {
         setIsLoaded(true);
+        setError(error);
+      });
+
+      axios.get<Jeu[]>("http://localhost:3333/jeu")
+      .then(res => {
+        setJeux(res.data)
+        
+      })
+      .catch((error : AxiosError) => {
         setError(error);
       })
   }, []);
@@ -31,17 +56,13 @@ export default function ZoneList(props: { isAdmin: boolean; }) {
       <>
         <p>Liste des zones du festival FJM</p>
         <Box sx={{ width: '100%' }}>
-            <Grid container spacing={2} justify-content="space-evenly">
-                {zones.map((zone) => (
-                    <Grid item>
-                        <Paper variant="outlined" sx={{ width: 200, height: 200}}>
-                            <div className="zoneName">
-                                {zone.nom_zone}
-                            </div>
-                        </Paper>
-                    </Grid>
-                ))}
-            </Grid>
+          <Grid container spacing={2} justify-content="space-evenly">
+            {zones.map((zone: Zone) => (
+              <Grid key={'zone-'+zone.id_zone} item>
+                <ZoneItem isAdmin={props.isAdmin} zone={zone} listJeux={jeux}></ZoneItem>
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       </>
     );
