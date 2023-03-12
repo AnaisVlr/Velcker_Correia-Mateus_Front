@@ -29,7 +29,7 @@ export default function ZoneItem(props: { isAdmin: boolean, zone: Zone, listJeux
         id_jeu: selectedJeu,
         id_zone: zone.id_zone
       };
-      axios.post("http://localhost:3333/zone/jeu", data)
+      axios.post("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/jeu", data)
         .then(res => {
           let j : Jeu | undefined = jeux.find(j => j.id_jeu === selectedJeu);
           if(j !== undefined){
@@ -46,7 +46,7 @@ export default function ZoneItem(props: { isAdmin: boolean, zone: Zone, listJeux
     }
   }
   const handleRemoveAffectation = (id_jeu: number) => {
-    axios.delete("http://localhost:3333/zone/"+zone.id_zone+"/"+id_jeu)
+    axios.delete("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/"+zone.id_zone+"/"+id_jeu)
       .then(res => {
         let j : Jeu | undefined = zone.jeux.find(j => j.id_jeu === id_jeu);
         if(j !== undefined){

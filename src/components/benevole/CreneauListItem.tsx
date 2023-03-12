@@ -58,7 +58,7 @@ export default function CreneauListItem(props: typeProps) {
         debut_new: debut,
         fin: fin
       }
-      axios.put("http://localhost:3333/zone/creneau", data)
+      axios.put("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/creneau", data)
       .then(() => {
         if(debut)
           c.debut = debut.toDate()
@@ -83,7 +83,7 @@ export default function CreneauListItem(props: typeProps) {
       fin: c.fin
     };
     
-   axios.delete("http://localhost:3333/zone/creneau", {data})
+   axios.delete("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/creneau", {data})
     .then(() => {
       props.onClickDelete(c.zone.id_zone, new Date(c.debut));
       setSuccess("Suppression réussie !");

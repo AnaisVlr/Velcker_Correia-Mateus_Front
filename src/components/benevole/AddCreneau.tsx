@@ -57,7 +57,7 @@ export default function AddCreneau() {
         debut: debut,
         fin: fin
       }
-      axios.post("http://localhost:3333/zone/creneau", data)
+      axios.post("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/creneau", data)
       .then(res => {
         setSuccess("Ajoute réussi !")
       }).catch((error) => {
@@ -67,11 +67,11 @@ export default function AddCreneau() {
     }
   }
   useEffect(() => {
-    axios.get<Benevole[]>("http://localhost:3333/benevole")
+    axios.get<Benevole[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/benevole")
       .then(res => { 
         setBenevoles(res.data);
 
-        axios.get<Zone[]>("http://localhost:3333/zone")
+        axios.get<Zone[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone")
         .then(res => {
           setZones(res.data);
           setIsLoaded(true);

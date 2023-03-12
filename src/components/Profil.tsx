@@ -36,7 +36,7 @@ export default function Profil() {
         "new_password_benevole": new_password
       }
   
-      axios.put("http://localhost:3333/benevole/password", data)
+      axios.put("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/benevole/password", data)
       .then(res => {
         setSuccess("Modification réussie")
       }).catch((error) => {
@@ -51,7 +51,7 @@ export default function Profil() {
 
   useEffect(() => {
 
-    axios.get<Benevole>("http://localhost:3333/benevole/email/"+user)
+    axios.get<Benevole>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/benevole/email/"+user)
     .then(res => {
       const data = res.data
       setEmail(data.email_benevole)

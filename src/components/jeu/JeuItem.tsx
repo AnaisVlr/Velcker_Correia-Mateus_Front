@@ -66,7 +66,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Z
                 "type_jeu": type
             }
         
-            axios.put("http://localhost:3333/jeu", data)
+            axios.put("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/jeu", data)
             .then(res => {
                 setNom(newName)
                 setSuccess("Modification réussie")
@@ -81,7 +81,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Z
     }
 
     const handleDelete = () => {
-        axios.delete("http://localhost:3333/jeu/"+jeu.id_jeu)
+        axios.delete("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/jeu/"+jeu.id_jeu)
         .then(() => {
             props.onClickDelete(jeu.id_jeu)
             navigate('/jeux')
@@ -94,7 +94,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Z
                 id_jeu: jeu.id_jeu,
                 id_zone: selectedZone
             };
-            axios.post("http://localhost:3333/zone/jeu", data)
+            axios.post("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/jeu", data)
             .then(res => {
                 let z : Zone | undefined = zones.find(z => z.id_zone === selectedZone);
                 if(z !== undefined){
@@ -110,7 +110,7 @@ export default function JeuItem(props: { isAdmin: boolean, jeu: Jeu, listZone: Z
         }
     }
     const handleRemoveAffectation = (id_zone: number) => {
-        axios.delete("http://localhost:3333/zone/"+id_zone+"/"+jeu.id_jeu)
+        axios.delete("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/"+id_zone+"/"+jeu.id_jeu)
         .then(res => {
             let z : Zone | undefined = jeu.zones.find(z => z.id_zone === id_zone);
             if(z !== undefined){

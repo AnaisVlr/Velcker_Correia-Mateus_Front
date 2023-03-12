@@ -28,7 +28,7 @@ export default function BenevoleListItem(props: typeProps) {
   const [creneaux, setCreneaux] = React.useState<Creneau[]>(b.creneaux);
 
   const onConfirmDelete = () => {
-    axios.delete("http://localhost:3333/benevole/"+b.id_benevole)
+    axios.delete("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/benevole/"+b.id_benevole)
     .then(() => {
       props.onClickDelete(b.id_benevole)
     })

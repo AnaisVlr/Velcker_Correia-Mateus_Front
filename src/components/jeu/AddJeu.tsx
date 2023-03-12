@@ -48,7 +48,7 @@ export default function AddJeu() {
             "type_jeu": type
         }
     
-        axios.post("http://localhost:3333/jeu", data)
+        axios.post("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/jeu", data)
         .then(res => {
             setSuccess("Création réussie")
             setNom("")

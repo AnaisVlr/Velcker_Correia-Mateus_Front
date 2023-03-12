@@ -47,13 +47,13 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
     const benevoleArray : BenevoleWithCreneaux[] = [];
 
     //D'abord fetch tous les bénévoles, ensuite on récupérera leur créneau
-    axios.get<Benevole[]>("http://localhost:3333/benevole")
+    axios.get<Benevole[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/benevole")
     .then(res => {
       res.data.forEach((d: any) => {
         benevoleArray.push(new BenevoleWithCreneaux(d.id_benevole, d.prenom_benevole, d.nom_benevole, d.email_benevole, "", d.is_admin, []))
       });
       //Récupération des créneaux
-      axios.get("http://localhost:3333/benevole/creneaux")
+      axios.get("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/benevole/creneaux")
       .then(res => {
         res.data.forEach((d: any) => {   
           const benevole : Benevole = new Benevole(d.benevole.id_benevole, d.benevole.prenom_benevole, d.benevole.nom_benevole, d.benevole.email_benevole, "", [d.zone])
@@ -75,7 +75,7 @@ export default function BenevoleList(props: { isAdmin: boolean; }) {
     });
     
     //Récupérer la liste des zones
-    axios.get<Zone[]>("http://localhost:3333/zone")
+    axios.get<Zone[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone")
     .then(res => {
       res.data.push(new Zone(-1, "Tous", [], [])) //Pas de zone sélectionnée
       res.data.sort((a, b) => a.id_zone - b.id_zone)

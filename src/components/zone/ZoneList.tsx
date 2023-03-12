@@ -14,12 +14,12 @@ export default function ZoneList(props: { isAdmin: boolean; }) {
   const [jeux, setJeux] = useState<Jeu[]>([]);
   
   useEffect(() => {
-    axios.get<Zone[]>("http://localhost:3333/zone")
+    axios.get<Zone[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone")
       .then(res => { 
         let listZones : Zone[] = res.data
         
         listZones.forEach(zone => {
-          axios.get<Jeu[]>("http://localhost:3333/jeu/zone/"+zone.id_zone)
+          axios.get<Jeu[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/jeu/zone/"+zone.id_zone)
           .then(res => {
             zone.jeux = []
             
@@ -37,7 +37,7 @@ export default function ZoneList(props: { isAdmin: boolean; }) {
         setError(error);
       });
 
-      axios.get<Jeu[]>("http://localhost:3333/jeu")
+      axios.get<Jeu[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/jeu")
       .then(res => {
         setJeux(res.data)
         

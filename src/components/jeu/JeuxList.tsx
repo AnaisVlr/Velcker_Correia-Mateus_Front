@@ -33,14 +33,14 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
   //Lors du chargement de la page, se fait 1 seule fois
   useEffect(() => {
     //On récupère les jeux
-    axios.get<Jeu[]>("http://localhost:3333/jeu")
+    axios.get<Jeu[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/jeu")
       .then(res => {
         setIsLoaded(true);
 
         let listJeux : Jeu[] = res.data
         
         listJeux.forEach(jeu => {
-          axios.get<Zone[]>("http://localhost:3333/zone/"+jeu.id_jeu+"/jeu")
+          axios.get<Zone[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone/"+jeu.id_jeu+"/jeu")
           .then(res => {
             jeu.zones = []
             res.data.forEach((ele: any) => {
@@ -56,7 +56,7 @@ export default function JeuxList(props: { isAdmin: boolean; }) {
         setError(error);
       })
 
-    axios.get<Zone[]>("http://localhost:3333/zone")
+    axios.get<Zone[]>("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/zone")
       .then(res => {
         res.data.push(new Zone(-1, "Tous", [], [])) //Pas de zone sélectionnée
         res.data.sort((a, b) => a.id_zone - b.id_zone)

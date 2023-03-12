@@ -31,7 +31,7 @@ export default function AddBenevole() {
         "password_benevole": password
       }
   
-      axios.post("http://localhost:3333/benevole", data)
+      axios.post("https://velcker-correia-mateus-api-mobile.cluster-ig3.igpolytech.fr/benevole", data)
       .then(res => {
         setSuccess("Création réussie")
       }).catch((error) => {
